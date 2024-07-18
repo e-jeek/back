@@ -9,7 +9,7 @@ build/
 application.properties
 
 ### .yml ###
-*.yml
+resources/*.yml
 
 ### STS ###
 .apt_generated
