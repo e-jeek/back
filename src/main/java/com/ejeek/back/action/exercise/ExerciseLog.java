@@ -10,14 +10,12 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
+@DiscriminatorValue("EXERCISE")
 public class ExerciseLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
-    @JoinColumn(name = "action_id")
-    private Action action;
     private DietType dietType;
     private String foodName;
     private Integer calories;
