@@ -29,6 +29,6 @@ permissions:
 ## runas (optional): 스크립트를 실행하는 사용자
 hooks:
   ApplicationStart:
-    - location: ~/apps/spring-practice/start.sh
+    - location: start.sh
       timeout: 60
       runas: ec2-user
