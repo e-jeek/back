@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-PROJECT_ROOT="/home/ec2-user/apps/spring-practice"
-JAR_FILE="$PROJECT_ROOT/spring-webapp.jar"
+PROJECT_ROOT="/home/ec2-user/apps/workoutwith"
+JAR_FILE="$PROJECT_ROOT/build/libs/back-0.0.1-SNAPSHOT.jar"
 
 APP_LOG="$PROJECT_ROOT/application.log"
 ERROR_LOG="$PROJECT_ROOT/error.log"
