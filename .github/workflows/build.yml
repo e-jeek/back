@@ -9,9 +9,9 @@ name: Spring Boot & Gradle CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [ dev ]
   pull_request:
-    branches: [ main ]
+    branches: [ dev ]
 
 # 해당 코드에서 사용될 변수 설정
 env:
