@@ -17,7 +17,6 @@ public class MemberService {
     public Member createMember(Member member) {
         validateDuplicateMember(member);
         return memberRepository.save(member);
-
     }
     private void validateDuplicateMember(Member member){
         Member findMember = memberRepository.findByEmail(member.getEmail());

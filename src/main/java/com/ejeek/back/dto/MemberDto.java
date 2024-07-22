@@ -29,4 +29,5 @@ public class MemberDto {
     private Integer weight;
     private Boolean policy;
     private Boolean marketing;
+
 }
