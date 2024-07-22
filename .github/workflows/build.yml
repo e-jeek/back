@@ -9,9 +9,9 @@ name: Spring Boot & Gradle CI/CD
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ main ]
   pull_request:
-    branches: [ dev ]
+    branches: [ main ]
 
 # 해당 코드에서 사용될 변수 설정
 env:
@@ -20,6 +20,7 @@ env:
   S3_BUCKET_NAME: workoutwith-bucket
   CODE_DEPLOY_APP_NAME: workoutwith-codedeploy-app
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: workoutwith-codedeploy-deployment-group
+  DOCKER_IMAGE_NAME: spring-practice
 
 permissions:
   contents: read
@@ -50,6 +51,22 @@ jobs:
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
           arguments: build
+
+      # Docker 이미지 빌드
+      - name: Build Docker image
+        run: docker build -t ${{ env.DOCKER_IMAGE_NAME }} .
+
+      # 기존 Docker 컨테이너 중지 및 삭제
+      - name: Stop and remove old Docker container
+        run: |
+          if [ $(docker ps -q -f name=my-java-container) ]; then
+            docker stop my-java-container
+            docker rm my-java-container
+          fi
+
+      # 새로운 Docker 컨테이너 실행
+      - name: Run new Docker container
+        run: docker run -d -p 8080:8080 --name my-java-container ${{ env.DOCKER_IMAGE_NAME }}
 
       # AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
       - name: Configure AWS credentials
