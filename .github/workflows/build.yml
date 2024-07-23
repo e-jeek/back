@@ -20,6 +20,7 @@ env:
   S3_BUCKET_NAME: workoutwith-bucket
   CODE_DEPLOY_APP_NAME: workoutwith-codedeploy-app
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: workoutwith-codedeploy-deployment-group
+  DOCKER_IMAGE_NAME: spring-practice
 
 permissions:
   contents: read
@@ -50,6 +51,15 @@ jobs:
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
           arguments: build
+
+      - name: Make zip file
+        run: |
+          mkdir deploy
+          cp ./appspec.yml ./deploy/
+          cp ./Dockerfile ./deploy/
+          cp ./*.sh ./deploy/
+          cp ./build/libs/*.jar ./deploy/
+          zip -r -qq -j ./spring-build.zip ./deploy
 
       # AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
       - name: Configure AWS credentials
