@@ -58,7 +58,7 @@ public class S3UploadService {
     private String createFileName(String fileName) {
         try {
             String ext = fileName.substring(fileName.lastIndexOf("."));
-            return "image/" + UUID.randomUUID() + ext;
+            return UUID.randomUUID() + ext;
         } catch (StringIndexOutOfBoundsException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일(" + fileName + ") 입니다.");
         }
