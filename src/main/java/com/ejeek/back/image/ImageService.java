@@ -1,10 +1,7 @@
 package com.ejeek.back.image;
 
-import com.ejeek.back.challenge.Challenge;
-import com.ejeek.back.global.exception.CustomException;
-import com.ejeek.back.global.exception.ExceptionCode;
 import com.ejeek.back.global.fileupload.S3UploadService;
-import com.ejeek.back.member.Member;
+import com.ejeek.back.global.referable.ImageReferable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,24 +17,11 @@ public class ImageService {
     private final S3UploadService s3UploadService;
     private final ImageRepository imageRepository;
 
-    public Image createImage(MultipartFile file, Object entity) {
+    public Image createImage(MultipartFile file, ImageReferable entity) {
         String filePath = upload(file);
-        Image image = linkImageToEntity(entity, filePath);
+        ImageReference imageReference = new ImageReference(entity.getImageMappingType(), entity.getRefId());
+        Image image = new Image(imageReference, filePath);
         return imageRepository.save(image);
-    }
-
-    private Image linkImageToEntity(Object entity, String filePath) {
-        Image image;
-        if (entity instanceof Member) {
-            ImageReference imageReference = new ImageReference(ImageReference.MappingType.MEMBER, ((Member) entity).getId());
-            image = new Image(imageReference, filePath);
-        } else if (entity instanceof Challenge) {
-            ImageReference imageReference = new ImageReference(ImageReference.MappingType.CHALLENGE, ((Challenge) entity).getId());
-            image = new Image(imageReference, filePath);
-        } else {
-            throw new CustomException(ExceptionCode.IMAGE_SAVE_FAIL);
-        }
-        return image;
     }
 
     private String upload(MultipartFile file) {

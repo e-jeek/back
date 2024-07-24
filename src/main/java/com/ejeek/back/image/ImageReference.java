@@ -31,7 +31,6 @@ public class ImageReference {
         CHALLENGE(Challenge.class),
         FEED(Feed.class);
 
-        MappingType(Class<?> mappingTypeClass) {
-        }
+        private final Class<?> mappingTypeClass;
     }
 }
