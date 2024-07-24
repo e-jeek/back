@@ -3,6 +3,8 @@ package com.ejeek.back.member;
 import com.ejeek.back.enums.Gender;
 import com.ejeek.back.enums.MemberStatus;
 import com.ejeek.back.global.audit.Timestamped;
+import com.ejeek.back.global.referable.ImageReferable;
+import com.ejeek.back.image.ImageReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +16,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Member extends Timestamped {
+public class Member extends Timestamped implements ImageReferable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,4 +37,14 @@ public class Member extends Timestamped {
     private Integer weight;
     private Boolean policy;
     private Boolean marketing;
+
+    @Override
+    public ImageReference.MappingType getImageMappingType() {
+        return ImageReference.MappingType.MEMBER;
+    }
+
+    @Override
+    public Long getRefId() {
+        return this.id;
+    }
 }
