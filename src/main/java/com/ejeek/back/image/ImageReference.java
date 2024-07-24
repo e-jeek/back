@@ -2,6 +2,7 @@ package com.ejeek.back.image;
 
 import com.ejeek.back.action.Action;
 import com.ejeek.back.challenge.Challenge;
+import com.ejeek.back.challenge.challenge_confirm.ChallengeConfirm;
 import com.ejeek.back.feed.Feed;
 import com.ejeek.back.member.Member;
 import jakarta.persistence.Embeddable;
@@ -29,7 +30,8 @@ public class ImageReference {
         MEMBER(Member.class),
         ACTION(Action.class),
         CHALLENGE(Challenge.class),
-        FEED(Feed.class);
+        FEED(Feed.class),
+        CHALLENGE_CONFIRM(ChallengeConfirm.class);
 
         private final Class<?> mappingTypeClass;
     }
