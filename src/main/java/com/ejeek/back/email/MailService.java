@@ -46,18 +46,23 @@ public class MailService {
         context.setVariable("ePw", ePw);
         String html = templateEngine.process("email", context);
         helper.setText(html, true);
-
         helper.addInline("image", new ClassPathResource("static/logo.png"));
 
-        log.info("이메일 전송 email = {}", email);
+        storeEmailCode(email, ePw);
         mailSender.send(message);
-        publisher.publishEvent(new MailSendApplicationEvent(this, email, ePw));
     }
 
     public boolean confirm(MailDto emailDto) {
         log.info("인증 번호 확인 email = {}, code = {}", emailDto.getEmail(), emailDto.getCode());
         String email = redisUtil.getData(emailDto.getCode());
         return email != null && email.equals(emailDto.getEmail());
+    }
+
+    private void storeEmailCode(String email, String ePw) {
+        long expiryTimeSeconds = 60 * 3L;
+        log.info("Redis 인증 번호, 이메일 저장. email = {}, code = {}", email, ePw);
+        redisUtil.setDataExpire(ePw, email, expiryTimeSeconds);
+        log.info("Redis 저장 완료. expiryTime: {} minutes", expiryTimeSeconds / 60);
     }
 
     private static String createKey() {
