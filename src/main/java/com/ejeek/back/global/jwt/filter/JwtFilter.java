@@ -1,5 +1,6 @@
-package com.ejeek.back.global.config;
+package com.ejeek.back.global.jwt.filter;
 
+import com.ejeek.back.global.jwt.provider.TokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
