@@ -1,4 +1,4 @@
-package com.ejeek.back.global.config;
+package com.ejeek.back.global.jwt.provider;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

@@ -1,17 +1,17 @@
-package com.ejeek.back.dto;
+package com.ejeek.back.member.dto;
 
 import com.ejeek.back.enums.Gender;
 import com.ejeek.back.enums.MemberStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class MemberDto {
     private Long id;

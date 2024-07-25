@@ -1,4 +1,4 @@
-package com.ejeek.back.global.config;
+package com.ejeek.back.global.jwt.hendler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

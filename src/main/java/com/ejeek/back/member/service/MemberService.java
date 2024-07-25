@@ -1,9 +1,10 @@
-package com.ejeek.back.service;
+package com.ejeek.back.member.service;
 
-import com.ejeek.back.member.Member;
-import com.ejeek.back.repository.MemberRepository;
+import com.ejeek.back.member.entity.Member;
+import com.ejeek.back.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,8 +12,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MemberService {
 
-
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public Member createMember(Member member) {
         validateDuplicateMember(member);
