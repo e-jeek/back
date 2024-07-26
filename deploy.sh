@@ -13,6 +13,7 @@ else
 fi
 
 
+
 cd /home/ec2-user/apps/workoutwith
 sudo docker build -t workoutwith .
 sudo docker run -d -p 8080:8080 workoutwith
