@@ -11,14 +11,12 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
+@DiscriminatorValue("WAKEUP")
 public class WakeupLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
-    @JoinColumn(name = "action_id")
-    private Action action;
     private LocalDateTime wakeupTime;
     private String content;
 

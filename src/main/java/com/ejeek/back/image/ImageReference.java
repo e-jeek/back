@@ -2,15 +2,21 @@ package com.ejeek.back.image;
 
 import com.ejeek.back.action.Action;
 import com.ejeek.back.challenge.Challenge;
+import com.ejeek.back.challenge.challenge_confirm.ChallengeConfirm;
 import com.ejeek.back.feed.Feed;
 import com.ejeek.back.member.Member;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Embeddable
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 public class ImageReference {
 
     @Enumerated(EnumType.STRING)
@@ -24,9 +30,9 @@ public class ImageReference {
         MEMBER(Member.class),
         ACTION(Action.class),
         CHALLENGE(Challenge.class),
-        FEED(Feed.class);
+        FEED(Feed.class),
+        CHALLENGE_CONFIRM(ChallengeConfirm.class);
 
-        MappingType(Class<?> mappingTypeClass) {
-        }
+        private final Class<?> mappingTypeClass;
     }
 }

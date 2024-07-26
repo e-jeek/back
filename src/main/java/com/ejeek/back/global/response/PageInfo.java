@@ -9,6 +9,6 @@ public class PageInfo {
 
     private int page;
     private int size;
-    private long totalSize;
-    private int totalPage;
+    private boolean first;
+    private boolean last;
 }
