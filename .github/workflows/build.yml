@@ -51,8 +51,8 @@ jobs:
           ##spring.security.oauth2.client.registration.google.client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
           ##spring.security.oauth2.client.registration.google.client-secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           ##jwt.secret: ${{ secrets.JWT_SECRET }}
-          cloud.aws.credentials.accessKey: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          cloud.aws.credentials.secretKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          cloud.aws.credentials.accessKey: ${{ secrets.AWS_S3_ACCESS_KEY }}
+          cloud.aws.credentials.secretKey: ${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
           spring.mail.password: ${{ secrets.GOOGLE_MAIL_PASSWORD }}
 
       # gradlew 파일 실행권한 설정

@@ -51,7 +51,7 @@ spring:
 
 email:
   from:
-    address: ${GOOGLE_MAIL}
+    address: workoutwithproject@gmail.com
 
 #jwt:
 #  secret: ${JWT_SECRET}
