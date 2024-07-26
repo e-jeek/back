@@ -19,6 +19,8 @@ env:
   CODE_DEPLOY_APP_NAME: workoutwith-codedeploy-app
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: workoutwith-codedeploy-deployment-group
   DOCKER_IMAGE_NAME: spring-practice
+  RESOURCE_PATH: src/main/resources/application.yml
+
 
 permissions:
   contents: read
@@ -84,3 +86,18 @@ jobs:
             --deployment-config-name CodeDeployDefault.AllAtOnce \
             --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
             --s3-location bucket=$S3_BUCKET_NAME,key=$GITHUB_SHA.zip,bundleType=zip
+
+      - name: Set yml file
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ${{ env.RESOURCE_PATH }}
+        env:
+           spring.datasource.url: jdbc:mysql://${{ secrets.RDS_ENDPOINT }}:${{ secrets.RDS_PORT }}/inddybuddydb?useSSL=false&&serverTimezone=Asia/Seoul
+           spring.datasource.username: ${{ secrets.RDS_USERNAME }}
+           spring.datasource.password: ${{ secrets.RDS_PASSWORD }}
+           ##spring.security.oauth2.client.registration.google.client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
+           ##spring.security.oauth2.client.registration.google.client-secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+           ##jwt.secret: ${{ secrets.JWT_SECRET }}
+           cloud.aws.credentials.accessKey: ${{ secrets.AWS_ACCESS_KEY_ID }}
+           cloud.aws.credentials.secretKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+           spring.mail.password: ${{ secrets.GOOGLE_MAIL_PASSWORD }}
