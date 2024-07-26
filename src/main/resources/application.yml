@@ -29,7 +29,7 @@ spring:
     default-encoding: UTF-8
     host: smtp.gmail.com
     port: 587
-    username: ${GOOGLE_MAIL}
+    username: workoutwithproject@gmail.com
     password: ${GOOGLE_MAIL_PASSWORD}
     properties:
       mail:
