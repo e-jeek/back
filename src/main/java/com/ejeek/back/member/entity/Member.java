@@ -10,9 +10,7 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Entity
-//@Table(name = "member")
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -45,19 +43,25 @@ public class Member extends Timestamped {
 
     public static Member createMember(MemberDto dto) {
         Member member = new Member();
-        member.setEmail(dto.getEmail());
-        member.setPassword(dto.getPassword());
-        member.setName(dto.getName());
-        member.setNickname(dto.getNickname());
-        member.setStatus(dto.getStatus());
-        member.setRole(Role.USER);
-        member.setContent(dto.getContent());
-        member.setBirth(dto.getBirth());
-        member.setGender(dto.getGender());
-        member.setHeight(dto.getHeight());
-        member.setWeight(dto.getWeight());
-        member.setPolicy(dto.getPolicy());
-        member.setMarketing(dto.getMarketing());
+
+        member.email = dto.getEmail();
+        member.password = dto.getPassword();
+        member.name = dto.getName();
+        member.nickname = dto.getNickname();
+        member.status = dto.getStatus();
+        member.role = Role.USER;
+        member.content = dto.getContent();
+        member.birth = dto.getBirth();
+        member.gender = dto.getGender();
+        member.height = dto.getHeight();
+        member.weight = dto.getWeight();
+        member.policy = dto.getPolicy();
+        member.marketing = dto.getMarketing();
+
         return member;
+    }
+
+    public void setEncryptedPassword(String password) {
+        this.password = password;
     }
 }

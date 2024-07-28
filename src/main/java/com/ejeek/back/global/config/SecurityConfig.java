@@ -1,6 +1,8 @@
 package com.ejeek.back.global.config;
 
 import com.ejeek.back.global.jwt.filter.JwtFilter;
+import com.ejeek.back.global.jwt.hendler.JwtAccessDeniedHandler;
+import com.ejeek.back.global.jwt.hendler.JwtAuthenticationEntryPoint;
 import com.ejeek.back.global.jwt.provider.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +24,13 @@ public class SecurityConfig {
 
     private final CorsConfigurationSource corsConfigurationSource;
     private final TokenProvider tokenProvider;
+    private final JwtAccessDeniedHandler accessDeniedHandler;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -36,11 +45,18 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/test").permitAll()
+                .requestMatchers("/api/authenticate").permitAll()
+                .requestMatchers("/api/members/signup").permitAll()
                 .anyRequest().authenticated()
         );
 
         http.addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+
+        http.exceptionHandling(exceptionHandling -> {
+            exceptionHandling
+                    .accessDeniedHandler(accessDeniedHandler)
+                    .authenticationEntryPoint(authenticationEntryPoint);
+        });
 
         return http.build();
     }
