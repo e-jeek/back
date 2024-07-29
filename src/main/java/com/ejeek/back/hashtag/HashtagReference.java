@@ -1,7 +1,7 @@
 package com.ejeek.back.hashtag;
 
 import com.ejeek.back.challenge.Challenge;
-import com.ejeek.back.feed.Feed;
+import com.ejeek.back.feed.entity.Feed;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

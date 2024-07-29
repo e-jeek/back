@@ -1,4 +1,4 @@
-package com.ejeek.back.feed;
+package com.ejeek.back.feed.entity;
 
 import com.ejeek.back.global.audit.Timestamped;
 import com.ejeek.back.global.referable.HashtagReferable;
