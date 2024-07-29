@@ -13,6 +13,8 @@ else
 fi
 
 
+
+
 ## 이전 버젼의 java Docker Image 제거
 docker images -q | grep -v -F -f <(docker ps --format "{{.Image}}" | awk -F: '{print $1}') | xargs -r docker rmi
 
