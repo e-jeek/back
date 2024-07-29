@@ -13,7 +13,6 @@ else
 fi
 
 
-
 ##경로설정
 cd /home/ec2-user/apps/workoutwith
 
