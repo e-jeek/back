@@ -13,6 +13,13 @@ else
 fi
 
 
+
+echo "> 종료된 Docker 컨테이너 삭제" >> /home/ec2-user/deploy.log
+sudo docker container prune -f
+
+echo "> 실행 중이지 않은 Docker 이미지 삭제" >> /home/ec2-user/deploy.log
+sudo docker image prune -a -f
+
 ##경로설정
 cd /home/ec2-user/apps/workoutwith
 
