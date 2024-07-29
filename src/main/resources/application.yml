@@ -7,8 +7,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-      format_sql: true
-    show-sql: true
     database-platform: org.hibernate.dialect.MySQLDialect
     database: mysql
   servlet:
@@ -46,7 +44,7 @@ spring:
     check-template: true
     cache: false
   redis:
-    host: 0.0.0.0
+    host: http://3.36.81.47/
     port: 6379
 
 email:
