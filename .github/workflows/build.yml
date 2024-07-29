@@ -45,7 +45,7 @@ jobs:
         with:
           files: ${{ env.RESOURCE_PATH }}
         env:
-          spring.datasource.url: jdbc:mysql://${{ secrets.RDS_ENDPOINT }}:${{ secrets.RDS_PORT }}/inddybuddydb?useSSL=false&&serverTimezone=Asia/Seoul
+          spring.datasource.url: jdbc:mysql://${{ secrets.RDS_ENDPOINT }}:${{ secrets.RDS_PORT }}/workoutwith?useSSL=false&&serverTimezone=Asia/Seoul
           spring.datasource.username: ${{ secrets.RDS_USERNAME }}
           spring.datasource.password: ${{ secrets.RDS_PASSWORD }}
           ##spring.security.oauth2.client.registration.google.client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
