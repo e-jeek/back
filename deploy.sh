@@ -14,11 +14,11 @@ fi
 
 
 ## 실행중이지 않은 컨테이너 삭제
-docker container prune
+sudo docker container prune
 
 
 ## 이전 버젼의 java Docker Image 제거
-docker images -q | grep -v -F -f <(docker ps --format "{{.Image}}" | awk -F: '{print $1}') | xargs -r docker rmi
+sudo docker images -q | grep -v -F -f <(docker ps --format "{{.Image}}" | awk -F: '{print $1}') | xargs -r docker rmi
 
 ##경로설정
 cd /home/ec2-user/apps/workoutwith
