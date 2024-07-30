@@ -1,8 +1,5 @@
 package com.ejeek.back.action.exercise;
 
-import com.ejeek.back.action.Action;
-import com.ejeek.back.enums.DietType;
-import com.ejeek.back.image.Image;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,8 +13,7 @@ public class ExerciseLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private DietType dietType;
-    private String foodName;
+    private String name;
+    private Integer duration;
     private Integer calories;
-    private String content;
 }

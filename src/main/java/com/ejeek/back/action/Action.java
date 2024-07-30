@@ -22,6 +22,7 @@ public class Action extends Timestamped implements ImageReferable {
     @JoinColumn(name = "member_id")
     private Member member;
     private Integer score;
+    private String content;
 
     @Override
     public ImageReference.MappingType getImageMappingType() {
