@@ -1,6 +1,6 @@
 package com.ejeek.back.action.diet;
 
-import com.ejeek.back.action.Action;
+import com.ejeek.back.enums.DietType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,8 +14,7 @@ public class DietLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private Integer duration;
+    private DietType dietType;
+    private String foodName;
     private Integer calories;
-    private String content;
 }
