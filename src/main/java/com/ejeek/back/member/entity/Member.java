@@ -1,5 +1,7 @@
 package com.ejeek.back.member.entity;
 
+import com.ejeek.back.global.referable.ImageReferable;
+import com.ejeek.back.image.ImageReference;
 import com.ejeek.back.member.dto.MemberDto;
 import com.ejeek.back.enums.Gender;
 import com.ejeek.back.enums.MemberStatus;
@@ -14,7 +16,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Member extends Timestamped {
+public class Member extends Timestamped implements ImageReferable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +42,16 @@ public class Member extends Timestamped {
     private Integer weight;
     private Boolean policy;
     private Boolean marketing;
+
+    @Override
+    public ImageReference.MappingType getImageMappingType() {
+        return ImageReference.MappingType.MEMBER;
+    }
+
+    @Override
+    public Long getRefId() {
+        return this.id;
+    }
 
     public static Member createMember(MemberDto dto) {
         Member member = new Member();

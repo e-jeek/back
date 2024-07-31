@@ -35,19 +35,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-            .cors(cors -> cors.configurationSource(corsConfigurationSource));
+                .cors(cors -> cors.configurationSource(corsConfigurationSource));
 
         http.headers(headers -> {
             headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable);
         });
 
         http.httpBasic(AbstractHttpConfigurer::disable)
-            .formLogin(AbstractHttpConfigurer::disable);
+                .formLogin(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/api/authenticate").permitAll()
                 .requestMatchers("/api/members/signup").permitAll()
                 .requestMatchers("/test").permitAll()
+                .requestMatchers("/h2-console").permitAll()
                 .anyRequest().authenticated()
         );
 

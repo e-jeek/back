@@ -15,16 +15,6 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 20MB
-#  security:
-#    oauth2:
-#      client:
-#        registration:
-#          google:
-#            client-id: ${GOOGLE_CLIENT_ID}
-#            client-secret: ${GOOGLE_CLIENT_SECRET}
-#            scope:
-#              - profile
-#              - email
   mail:
     default-encoding: UTF-8
     host: smtp.gmail.com
@@ -46,15 +36,17 @@ spring:
     check-template: true
     cache: false
   redis:
-    host: 127.0.0.1
+    host: http://3.36.81.47/
     port: 6379
 
 email:
   from:
     address: ${GOOGLE_MAIL}
 
-#jwt:
-#  secret: ${JWT_SECRET}
+jwt:
+  secret: ${JWT_SECRET}
+  access-token-validity-in-seconds: 3600
+  refresh-token-validity-in-seconds: 86400
 
 cloud:
   aws:
