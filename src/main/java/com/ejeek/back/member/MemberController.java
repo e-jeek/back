@@ -2,10 +2,7 @@ package com.ejeek.back.member;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/member")
@@ -18,6 +15,12 @@ public class MemberController {
     public ResponseEntity<?> checkNickname(@RequestParam("nickname") String nickname) {
 
         return ResponseEntity.ok(memberService.checkNickname(nickname));
+    }
+
+    @GetMapping("/email")
+    public ResponseEntity<?> checkEmail(@RequestParam("email") String email) {
+
+        return ResponseEntity.ok(memberService.checkNickname(email));
     }
 
 }
