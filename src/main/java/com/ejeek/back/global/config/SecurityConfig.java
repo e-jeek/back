@@ -1,5 +1,6 @@
 package com.ejeek.back.global.config;
 
+import com.ejeek.back.member.OAuth2AuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 public class SecurityConfig {
 
     private final CorsConfigurationSource corsConfigurationSource;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -27,7 +29,8 @@ public class SecurityConfig {
         });
 
         http.httpBasic(AbstractHttpConfigurer::disable)
-            .formLogin(AbstractHttpConfigurer::disable);
+            .formLogin(AbstractHttpConfigurer::disable)
+                .oauth2Login(oauth2Login -> oauth2Login.successHandler(oAuth2AuthenticationSuccessHandler));
 
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/test").permitAll()
