@@ -36,7 +36,6 @@ public class ChallengeService {
         challenge.updateSecretKey(passwordEncoder.encode(request.getSecretKey()));
         Challenge save = challengeRepository.save(challenge);
 
-        // TODO : file 없을 경우, default 이미지 세팅? or Exception?
         Image image = imageService.createImage(file, save);
         save.updateImgUrl(image.getUrl());
 
@@ -47,11 +46,7 @@ public class ChallengeService {
 
     public ChallengeDto.Response modifyChallenge(Long challengeId, Member member, ChallengeDto.Request request,
                     MultipartFile file) {
-        Challenge findChallenge = findVerifiedChallenge(challengeId);
-        verifySameMember(findChallenge.getMember(), member);
-        checkParticipantsPresence(findChallenge);
-        findChallenge.checkEditableOrDeletable();
-
+        Challenge findChallenge = ensureChallengeIsEditable(challengeId, member);
         findChallenge.updateChallengeByDto(request);
 
         Image image = imageService.updateImage(file, findChallenge);
@@ -82,12 +77,17 @@ public class ChallengeService {
         return new SliceImpl<>(responseList, challenges.getPageable(), challenges.hasNext());
     }
 
-    public void deleteChallenge(Long challengeId, Member loginMember) {
+    public void deleteChallenge(Long challengeId, Member member) {
+        Challenge findChallenge = ensureChallengeIsEditable(challengeId, member);
+        challengeRepository.delete(findChallenge);
+    }
+
+    private Challenge ensureChallengeIsEditable(Long challengeId, Member member) {
         Challenge findChallenge = findVerifiedChallenge(challengeId);
-        verifySameMember(findChallenge.getMember(), loginMember);
+        verifySameMember(findChallenge.getMember(), member);
         checkParticipantsPresence(findChallenge);
         findChallenge.checkEditableOrDeletable();
-        challengeRepository.delete(findChallenge);
+        return findChallenge;
     }
 
     private Challenge findVerifiedChallenge(Long challengeId) {
