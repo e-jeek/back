@@ -1,27 +1,40 @@
 package com.ejeek.back.challenge;
 
+import com.ejeek.back.hashtag.Hashtag;
 import com.ejeek.back.member.Member;
-import com.ejeek.back.member.MemberDto;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.springframework.data.domain.Slice;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ChallengeMapper {
 
     @Mapping(target = "name", source = "request.name")
-    @Mapping(target = "status", source = "request.status")
     @Mapping(target = "content", source = "request.content")
     Challenge toChallenge(ChallengeDto.Request request, Member member);
 
 
     @Named("E2R")
     @Mapping(target = "id", source = "challenge.id")
-    @Mapping(target = "member", source = "member")
-    ChallengeDto.Response toResponse(Challenge challenge, MemberDto.Response member);
+    @Mapping(target = "member.id", source = "challenge.member.id")
+    @Mapping(target = "member.nickname", source = "challenge.member.nickname")
+    ChallengeDto.Response toResponse(Challenge challenge);
 
     @IterableMapping(qualifiedByName = "E2R")
-    Slice<ChallengeDto.Response> toReponseSlice(Slice<Challenge> challenges);
+    List<ChallengeDto.Response> toReponseList(List<Challenge> challenges);
+
+    default List<String> map(List<Hashtag> hashtags) {
+        if (hashtags == null) {
+            return null;
+        }
+        List<String> hashtagDtos = new ArrayList<>();
+        for (Hashtag hashtag : hashtags) {
+            hashtagDtos.add(hashtag.getReference().getTagName());
+        }
+        return hashtagDtos;
+    }
 }

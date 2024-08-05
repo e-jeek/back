@@ -4,18 +4,18 @@ import com.ejeek.back.enums.Capacity;
 import com.ejeek.back.enums.ChallengeStatus;
 import com.ejeek.back.enums.ChallengeType;
 import com.ejeek.back.enums.Rule;
-import com.ejeek.back.member.Member;
 import com.ejeek.back.member.MemberDto;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Getter
-@NoArgsConstructor
 public class ChallengeDto {
 
+    @Data
     @Getter
     @NoArgsConstructor
     public static class Request {
@@ -30,8 +30,10 @@ public class ChallengeDto {
         private Boolean hidden;
         private String secretKey;
         private String content;
+        private List<String> hashtags;
     }
 
+    @Data
     @Getter
     @AllArgsConstructor
     public static class Response {
@@ -47,8 +49,10 @@ public class ChallengeDto {
         private final Rule rule;
         private final Boolean hidden;
         private final String secretKey;
-        private final ChallengeStatus status;
         private final String content;
+        private final ChallengeStatus status;
+        private final List<String> hashtags;
+        private final String imgUrl;
         private final LocalDateTime createdAt;
         private final LocalDateTime updateAt;
     }

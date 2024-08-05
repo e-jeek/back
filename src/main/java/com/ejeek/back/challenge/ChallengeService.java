@@ -3,15 +3,20 @@ package com.ejeek.back.challenge;
 import com.ejeek.back.challenge.challenge_member.ChallengeMemberRepository;
 import com.ejeek.back.global.exception.CustomException;
 import com.ejeek.back.global.exception.ExceptionCode;
+import com.ejeek.back.hashtag.Hashtag;
+import com.ejeek.back.hashtag.HashtagService;
+import com.ejeek.back.image.Image;
 import com.ejeek.back.image.ImageService;
 import com.ejeek.back.member.Member;
-import com.ejeek.back.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -21,14 +26,20 @@ public class ChallengeService {
     private final ChallengeMapper challengeMapper;
     private final ChallengeRepository challengeRepository;
     private final ChallengeMemberRepository challengeMemberRepository;
-    private final MemberMapper memberMapper;
     private final ImageService imageService;
+    private final HashtagService hashtagService;
 
     public ChallengeDto.Response createChallenge(Member member, ChallengeDto.Request request, MultipartFile file) {
         Challenge challenge = challengeMapper.toChallenge(request, member);
         Challenge save = challengeRepository.save(challenge);
-        imageService.createImage(file, save);
-        return challengeMapper.toResponse(challenge, memberMapper.toResponse(member));
+
+        // TODO : file 없을 경우, default 이미지 세팅? or Exception?
+        Image image = imageService.createImage(file, save);
+        save.updateImgUrl(image.getUrl());
+
+        List<Hashtag> hashtags = hashtagService.createHashtags(request.getHashtags(), save);
+        hashtags.forEach(save::addHashtag);
+        return challengeMapper.toResponse(save);
     }
 
     public ChallengeDto.Response modifyChallenge(Long challengeId, Member loginMember, ChallengeDto.Request request,
@@ -37,15 +48,16 @@ public class ChallengeService {
         verifySameMember(findChallenge.getMember(), loginMember);
         checkParticipantsPresence(findChallenge);
         findChallenge.checkEditableOrDeletable();
-        // TODO update 하면 됨
-        return null;
+        // TODO update 필요
+        return challengeMapper.toResponse(findChallenge);
     }
 
     @Transactional(readOnly = true)
     public ChallengeDto.Response getChallenge(Long challengeId) {
         Challenge findChallenge = findVerifiedChallenge(challengeId);
-        return challengeMapper.toResponse(findChallenge, memberMapper.toResponse(findChallenge.getMember()));
+        return challengeMapper.toResponse(findChallenge);
     }
+
     /*
      * TODO update 정렬 필터 검색 기능
      * 정렬 : 생성된 시간 순, 조회수 많은 순, 참여자 많은 순
@@ -56,7 +68,8 @@ public class ChallengeService {
     @Transactional(readOnly = true)
     public Slice<ChallengeDto.Response> getChallenges(Pageable pageable) {
         Slice<Challenge> challenges = challengeRepository.findAll(pageable);
-        return challengeMapper.toReponseSlice(challenges);
+        List<ChallengeDto.Response> responseList = challengeMapper.toReponseList(challenges.getContent());
+        return new SliceImpl<>(responseList, challenges.getPageable(), challenges.hasNext());
     }
 
     public void deleteChallenge(Long challengeId, Member loginMember) {
@@ -64,7 +77,7 @@ public class ChallengeService {
         verifySameMember(findChallenge.getMember(), loginMember);
         checkParticipantsPresence(findChallenge);
         findChallenge.checkEditableOrDeletable();
-        // TODO delete 하면 됨
+        challengeRepository.delete(findChallenge);
     }
 
     private Challenge findVerifiedChallenge(Long challengeId) {

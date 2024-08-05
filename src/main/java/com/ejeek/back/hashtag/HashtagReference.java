@@ -6,15 +6,21 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Embeddable
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 public class HashtagReference {
 
     @Enumerated(EnumType.STRING)
     private MappingType type;
     private Long refId;
+    private String tagName;
 
     @Getter
     @AllArgsConstructor

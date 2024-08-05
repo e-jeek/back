@@ -9,6 +9,7 @@ import com.ejeek.back.global.exception.CustomException;
 import com.ejeek.back.global.exception.ExceptionCode;
 import com.ejeek.back.global.referable.HashtagReferable;
 import com.ejeek.back.global.referable.ImageReferable;
+import com.ejeek.back.hashtag.Hashtag;
 import com.ejeek.back.hashtag.HashtagReference;
 import com.ejeek.back.image.ImageReference;
 import com.ejeek.back.member.Member;
@@ -20,6 +21,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -72,6 +75,11 @@ public class Challenge extends Timestamped implements ImageReferable, HashtagRef
     @Column(nullable = false)
     private ChallengeStatus status = ChallengeStatus.INACTIVE;
 
+    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Hashtag> hashtags = new ArrayList<>();
+
+    private String imgUrl;
+
     @Builder
     public Challenge(Member member, String name, ChallengeType type, Capacity capacity, LocalDateTime dueDate,
                     LocalDateTime startDate, LocalDateTime endDate, Rule rule, Boolean hidden, String secretKey,
@@ -106,6 +114,15 @@ public class Challenge extends Timestamped implements ImageReferable, HashtagRef
 
     public void updateStatus(ChallengeStatus status) {
         this.status = status;
+    }
+
+    public void updateImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public void addHashtag(Hashtag hashtag) {
+        hashtags.add(hashtag);
+        hashtag.updateChallenge(this);
     }
 
     public void checkEditableOrDeletable() {

@@ -40,8 +40,7 @@ public class ChallengeController {
 
     @GetMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<ChallengeDto.Response> getChallenge(@PathVariable(value = "id") Long challengeId,
-                    @RequestPart ChallengeDto.Request request, @RequestPart MultipartFile file) {
+    public ResponseEntity<ChallengeDto.Response> getChallenge(@PathVariable(value = "id") Long challengeId) {
         ChallengeDto.Response response = challengeService.getChallenge(challengeId);
         return ResponseEntity.ok(response);
     }
