@@ -2,15 +2,12 @@ package com.ejeek.back.challenge;
 
 import com.ejeek.back.hashtag.Hashtag;
 import com.ejeek.back.member.Member;
-import org.mapstruct.IterableMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ChallengeMapper {
 
     @Mapping(target = "name", source = "request.name")

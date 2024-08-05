@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,9 +29,11 @@ public class ChallengeService {
     private final ChallengeMemberRepository challengeMemberRepository;
     private final ImageService imageService;
     private final HashtagService hashtagService;
+    private final PasswordEncoder passwordEncoder;
 
     public ChallengeDto.Response createChallenge(Member member, ChallengeDto.Request request, MultipartFile file) {
         Challenge challenge = challengeMapper.toChallenge(request, member);
+        challenge.updateSecretKey(passwordEncoder.encode(request.getSecretKey()));
         Challenge save = challengeRepository.save(challenge);
 
         // TODO : file 없을 경우, default 이미지 세팅? or Exception?
@@ -42,13 +45,20 @@ public class ChallengeService {
         return challengeMapper.toResponse(save);
     }
 
-    public ChallengeDto.Response modifyChallenge(Long challengeId, Member loginMember, ChallengeDto.Request request,
+    public ChallengeDto.Response modifyChallenge(Long challengeId, Member member, ChallengeDto.Request request,
                     MultipartFile file) {
         Challenge findChallenge = findVerifiedChallenge(challengeId);
-        verifySameMember(findChallenge.getMember(), loginMember);
+        verifySameMember(findChallenge.getMember(), member);
         checkParticipantsPresence(findChallenge);
         findChallenge.checkEditableOrDeletable();
-        // TODO update 필요
+
+        findChallenge.updateChallengeByDto(request);
+
+        Image image = imageService.updateImage(file, findChallenge);
+        findChallenge.updateImgUrl(image.getUrl());
+
+        List<Hashtag> hashtags = hashtagService.createHashtags(request.getHashtags(), findChallenge);
+        findChallenge.updateHashtags(hashtags);
         return challengeMapper.toResponse(findChallenge);
     }
 
@@ -93,7 +103,7 @@ public class ChallengeService {
 
     private void checkParticipantsPresence(Challenge challenge) {
         boolean isExist = challengeMemberRepository.existsByChallenge(challenge);
-        if (!isExist) {
+        if (isExist) {
             throw new CustomException(ExceptionCode.PARTICIPANT_EXIST);
         }
     }

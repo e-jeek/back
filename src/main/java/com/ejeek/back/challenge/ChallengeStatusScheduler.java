@@ -15,7 +15,6 @@ public class ChallengeStatusScheduler {
 
     private final ChallengeRepository challengeRepository;
 
-    // TODO 스케줄 작동 하는지 확인 필요
     @Scheduled(cron = "0 0 0 * * *")
     @Transactional
     public void updateChallengeStatus() {

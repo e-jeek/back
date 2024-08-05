@@ -3,6 +3,7 @@ package com.ejeek.back.challenge;
 import com.ejeek.back.global.response.MultiResponse;
 import com.ejeek.back.global.utils.UriCreator;
 import com.ejeek.back.member.Member;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -20,10 +21,10 @@ public class ChallengeController {
 
     @PostMapping
     @ResponseBody
-    public ResponseEntity<ChallengeDto.Response> createChallenge(@RequestPart ChallengeDto.Request request,
-                    @RequestPart MultipartFile file) {
+    public ResponseEntity<ChallengeDto.Response> createChallenge(@Valid @RequestPart ChallengeDto.Request request,
+                    @RequestPart(required = false) MultipartFile file) {
         // TODO : @AuthenticationPrincipal MemberPrincipal 에서 Member 가져오기
-        Member member = new Member(1L);
+        Member member = new Member(1L, "test@test.com");
         ChallengeDto.Response response = challengeService.createChallenge(member, request, file);
         return ResponseEntity.created(UriCreator.createURI(response.getId())).body(response);
     }
@@ -33,7 +34,7 @@ public class ChallengeController {
     public ResponseEntity<ChallengeDto.Response> updateChallenge(@PathVariable(value = "id") Long challengeId,
                     @RequestPart ChallengeDto.Request request, @RequestPart MultipartFile file) {
         // TODO : @AuthenticationPrincipal MemberPrincipal 에서 Member 가져오기
-        Member member = new Member(1L);
+        Member member = new Member(1L, "test@test.com");
         ChallengeDto.Response response = challengeService.modifyChallenge(challengeId, member, request, file);
         return ResponseEntity.ok(response);
     }
@@ -47,7 +48,7 @@ public class ChallengeController {
 
     @GetMapping
     @ResponseBody
-    public ResponseEntity<MultiResponse<ChallengeDto.Response>> getChallenges(@PageableDefault(page = 1, size = 30) Pageable pageable) {
+    public ResponseEntity<MultiResponse<ChallengeDto.Response>> getChallenges(@PageableDefault(size = 30) Pageable pageable) {
         Slice<ChallengeDto.Response> response = challengeService.getChallenges(pageable);
         return ResponseEntity.ok(new MultiResponse<>(response.getContent(), response));
     }
@@ -56,7 +57,7 @@ public class ChallengeController {
     @ResponseBody
     public ResponseEntity<ChallengeDto.Response> deleteChallenge(@PathVariable(value = "id") Long challengeId) {
         // TODO : @AuthenticationPrincipal MemberPrincipal 에서 Member 가져오기
-        Member member = new Member(1L);
+        Member member = new Member(1L, "test@test.com");
         challengeService.deleteChallenge(challengeId, member);
         return ResponseEntity.noContent().build();
     }

@@ -19,6 +19,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicUpdate
 public class Challenge extends Timestamped implements ImageReferable, HashtagReferable {
 
     @Id
@@ -88,12 +90,13 @@ public class Challenge extends Timestamped implements ImageReferable, HashtagRef
         this.name = name;
         this.type = type;
         this.capacity = capacity;
+        validateDateTime(dueDate, startDate, endDate);
         this.dueDate = dueDate;
         this.startDate = startDate;
         this.endDate = endDate;
         this.rule = rule;
         this.hidden = hidden;
-        this.secretKey = secretKey;
+        validateSecretKey(secretKey);
         this.content = content;
     }
 
@@ -112,6 +115,20 @@ public class Challenge extends Timestamped implements ImageReferable, HashtagRef
         return this.id;
     }
 
+    public void updateChallengeByDto(ChallengeDto.Request request) {
+        this.name = request.getName();
+        this.type = request.getType();
+        this.capacity = request.getCapacity();
+        validateDateTime(request.getDueDate(), request.getStartDate(), request.getEndDate());
+        this.dueDate = request.getDueDate();
+        this.startDate = request.getStartDate();
+        this.endDate = request.getEndDate();
+        this.rule = request.getRule();
+        this.hidden = request.getHidden();
+        validateSecretKey(request.getSecretKey());
+        this.content = request.getContent();
+    }
+
     public void updateStatus(ChallengeStatus status) {
         this.status = status;
     }
@@ -120,14 +137,47 @@ public class Challenge extends Timestamped implements ImageReferable, HashtagRef
         this.imgUrl = imgUrl;
     }
 
+    public void updateSecretKey(String secretKey) {
+        validateSecretKey(secretKey);
+    }
+
     public void addHashtag(Hashtag hashtag) {
         hashtags.add(hashtag);
         hashtag.updateChallenge(this);
     }
 
+    public void clearHashtags() {
+        this.hashtags.clear();
+    }
+
+    public void updateHashtags(List<Hashtag> hashtags) {
+        clearHashtags();
+        hashtags.forEach(this::addHashtag);
+    }
+
     public void checkEditableOrDeletable() {
         if (status == ChallengeStatus.ACTIVE || status == ChallengeStatus.FINISH) {
             throw new CustomException(ExceptionCode.CHALLENGE_CANNOT_MODIFY);
+        }
+    }
+
+    private void validateDateTime(LocalDateTime dueDate, LocalDateTime startDate, LocalDateTime endDate) {
+        LocalDateTime now = LocalDateTime.now();
+        if (dueDate.isBefore(now) || startDate.isBefore(now) || endDate.isBefore(now)) {
+            throw new CustomException(ExceptionCode.CHALLENGE_DATE_ERROR);
+        }
+        if (dueDate.isAfter(startDate)) {
+            throw new CustomException(ExceptionCode.CHALLENGE_DUEDATE_ERROR);
+        }
+        if (startDate.isAfter(endDate)) {
+            throw new CustomException(ExceptionCode.CHALLENGE_STARTDATE_ERROR);
+        }
+    }
+
+    private void validateSecretKey(String secretKey) {
+        if (hidden) {
+            if (secretKey == null || secretKey.isEmpty())  throw new CustomException(ExceptionCode.INVALID_SECRET_KEY);
+            this.secretKey = secretKey;
         }
     }
 }

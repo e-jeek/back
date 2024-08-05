@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service
 @Transactional
 @Slf4j
@@ -19,9 +21,16 @@ public class ImageService {
 
     public Image createImage(MultipartFile file, ImageReferable entity) {
         String filePath = upload(file);
-        ImageReference imageReference = new ImageReference(entity.getImageMappingType(), entity.getRefId());
-        Image image = new Image(imageReference, filePath);
+        ImageReference reference = new ImageReference(entity.getImageMappingType(), entity.getRefId());
+        Image image = new Image(reference, filePath);
         return imageRepository.save(image);
+    }
+
+    public Image updateImage(MultipartFile file, ImageReferable entity) {
+        ImageReference reference = new ImageReference(entity.getImageMappingType(), entity.getRefId());
+        List<Image> imageList = imageRepository.findByReference(reference);
+        imageList.forEach(image -> s3UploadService.deleteFile(image.getUrl()));
+        return createImage(file, entity);
     }
 
     private String upload(MultipartFile file) {

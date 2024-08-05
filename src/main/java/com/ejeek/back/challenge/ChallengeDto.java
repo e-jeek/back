@@ -5,6 +5,7 @@ import com.ejeek.back.enums.ChallengeStatus;
 import com.ejeek.back.enums.ChallengeType;
 import com.ejeek.back.enums.Rule;
 import com.ejeek.back.member.MemberDto;
+import jakarta.validation.constraints.FutureOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -23,8 +24,11 @@ public class ChallengeDto {
         private String name;
         private ChallengeType type;
         private Capacity capacity;
+        @FutureOrPresent
         private LocalDateTime dueDate;
+        @FutureOrPresent
         private LocalDateTime startDate;
+        @FutureOrPresent
         private LocalDateTime endDate;
         private Rule rule;
         private Boolean hidden;
@@ -48,7 +52,6 @@ public class ChallengeDto {
         private final LocalDateTime endDate;
         private final Rule rule;
         private final Boolean hidden;
-        private final String secretKey;
         private final String content;
         private final ChallengeStatus status;
         private final List<String> hashtags;

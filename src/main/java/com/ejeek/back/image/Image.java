@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class Image {
 
     @EmbeddedId
-    private ImageReference type;
+    private ImageReference reference;
     private String url;
 }

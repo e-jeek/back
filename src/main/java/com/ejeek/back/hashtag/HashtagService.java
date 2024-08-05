@@ -23,8 +23,7 @@ public class HashtagService {
     }
 
     private Hashtag createHashtag(String tagName, HashtagReferable entity) {
-        HashtagReference hashtagReference =
-                        new HashtagReference(entity.getHashtagMappingType(), entity.getRefId(), tagName);
+        HashtagReference hashtagReference = new HashtagReference(entity.getHashtagMappingType(), entity.getRefId(), tagName);
         return new Hashtag(hashtagReference);
     }
 }
