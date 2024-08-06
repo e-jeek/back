@@ -8,10 +8,24 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Image {
 
-    @EmbeddedId
-    private ImageReference reference;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
+    private ImageReference.MappingType type;
+
+    @Column(name = "ref_id", nullable = false)
+    private Long refId;
+
     private String url;
+
+    public Image(ImageReference reference, String url) {
+        this.type = reference.getType();
+        this.refId = reference.getRefId();
+        this.url = url;
+    }
 }

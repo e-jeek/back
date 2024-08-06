@@ -33,14 +33,14 @@ public class ChallengeService {
 
     public ChallengeDto.Response createChallenge(Member member, ChallengeDto.Request request, MultipartFile file) {
         Challenge challenge = challengeMapper.toChallenge(request, member);
-        challenge.updateSecretKey(passwordEncoder.encode(request.getSecretKey()));
+        challenge.encryptSecretKey(passwordEncoder);
         Challenge save = challengeRepository.save(challenge);
 
         Image image = imageService.createImage(file, save);
         save.updateImgUrl(image.getUrl());
 
         List<Hashtag> hashtags = hashtagService.createHashtags(request.getHashtags(), save);
-        hashtags.forEach(save::addHashtag);
+        save.updateHashtags(hashtags);
         return challengeMapper.toResponse(save);
     }
 
@@ -48,6 +48,7 @@ public class ChallengeService {
                     MultipartFile file) {
         Challenge findChallenge = ensureChallengeIsEditable(challengeId, member);
         findChallenge.updateChallengeByDto(request);
+        findChallenge.encryptSecretKey(passwordEncoder);
 
         Image image = imageService.updateImage(file, findChallenge);
         findChallenge.updateImgUrl(image.getUrl());

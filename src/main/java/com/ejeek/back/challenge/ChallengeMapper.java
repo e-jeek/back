@@ -30,7 +30,7 @@ public interface ChallengeMapper {
         }
         List<String> hashtagDtos = new ArrayList<>();
         for (Hashtag hashtag : hashtags) {
-            hashtagDtos.add(hashtag.getReference().getTagName());
+            hashtagDtos.add(hashtag.getTagName());
         }
         return hashtagDtos;
     }

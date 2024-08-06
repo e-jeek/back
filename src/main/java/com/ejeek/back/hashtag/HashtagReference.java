@@ -10,22 +10,20 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Getter
-@Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class HashtagReference {
+public class HashtagReference implements Serializable {
 
-    @Enumerated(EnumType.STRING)
     private MappingType type;
     private Long refId;
-    private String tagName;
 
     @Getter
     @AllArgsConstructor
     public enum MappingType {
-
         CHALLENGE(Challenge.class),
         FEED(Feed.class);
 

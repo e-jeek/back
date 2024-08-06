@@ -20,6 +20,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -84,20 +85,21 @@ public class Challenge extends Timestamped implements ImageReferable, HashtagRef
 
     @Builder
     public Challenge(Member member, String name, ChallengeType type, Capacity capacity, LocalDateTime dueDate,
-                    LocalDateTime startDate, LocalDateTime endDate, Rule rule, Boolean hidden, String secretKey,
-                    String content) {
+                    LocalDateTime startDate, LocalDateTime endDate, Rule rule, Boolean hidden, String secretKey, String content) {
         this.member = member;
         this.name = name;
         this.type = type;
         this.capacity = capacity;
+        this.rule = rule;
+        this.content = content;
         validateDateTime(dueDate, startDate, endDate);
         this.dueDate = dueDate;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.rule = rule;
+        validateSecretKey(hidden, secretKey);
         this.hidden = hidden;
-        validateSecretKey(secretKey);
-        this.content = content;
+        if (hidden)
+            this.secretKey = secretKey;
     }
 
     @Override
@@ -115,18 +117,26 @@ public class Challenge extends Timestamped implements ImageReferable, HashtagRef
         return this.id;
     }
 
+    public void encryptSecretKey(PasswordEncoder passwordEncoder) {
+        if (this.secretKey != null && !this.secretKey.isEmpty()) {
+            this.secretKey = passwordEncoder.encode(this.secretKey);
+        }
+    }
+
     public void updateChallengeByDto(ChallengeDto.Request request) {
         this.name = request.getName();
         this.type = request.getType();
         this.capacity = request.getCapacity();
+        this.rule = request.getRule();
+        this.content = request.getContent();
         validateDateTime(request.getDueDate(), request.getStartDate(), request.getEndDate());
         this.dueDate = request.getDueDate();
         this.startDate = request.getStartDate();
         this.endDate = request.getEndDate();
-        this.rule = request.getRule();
+        validateSecretKey(request.getHidden(), request.getSecretKey());
         this.hidden = request.getHidden();
-        validateSecretKey(request.getSecretKey());
-        this.content = request.getContent();
+        if (request.getHidden())
+            this.secretKey = request.getSecretKey();
     }
 
     public void updateStatus(ChallengeStatus status) {
@@ -137,22 +147,12 @@ public class Challenge extends Timestamped implements ImageReferable, HashtagRef
         this.imgUrl = imgUrl;
     }
 
-    public void updateSecretKey(String secretKey) {
-        validateSecretKey(secretKey);
-    }
-
-    public void addHashtag(Hashtag hashtag) {
-        hashtags.add(hashtag);
-        hashtag.updateChallenge(this);
-    }
-
-    public void clearHashtags() {
-        this.hashtags.clear();
-    }
-
     public void updateHashtags(List<Hashtag> hashtags) {
-        clearHashtags();
-        hashtags.forEach(this::addHashtag);
+        this.hashtags.clear();
+        for (Hashtag hashtag : hashtags) {
+            this.hashtags.add(hashtag);
+            hashtag.updateChallenge(this);
+        }
     }
 
     public void checkEditableOrDeletable() {
@@ -174,10 +174,12 @@ public class Challenge extends Timestamped implements ImageReferable, HashtagRef
         }
     }
 
-    private void validateSecretKey(String secretKey) {
-        if (hidden) {
-            if (secretKey == null || secretKey.isEmpty())  throw new CustomException(ExceptionCode.INVALID_SECRET_KEY);
-            this.secretKey = secretKey;
+    private void validateSecretKey(Boolean hidden, String secretKey) {
+        if (hidden && (secretKey == null || secretKey.isEmpty())) {
+            throw new CustomException(ExceptionCode.SECRET_KEY_REQUIRED);
+        }
+        if (!hidden && (secretKey != null && !secretKey.isEmpty())) {
+            throw new CustomException(ExceptionCode.SECRET_KEY_NOT_ALLOWED);
         }
     }
 }

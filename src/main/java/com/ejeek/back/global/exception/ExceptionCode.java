@@ -19,7 +19,9 @@ public enum ExceptionCode {
     CHALLENGE_DATE_ERROR(400, "현재보다 이후의 날짜로만 등록 가능합니다."),
     CHALLENGE_DUEDATE_ERROR(400, "마감일은 시작일보다 이전이어야 합니다."),
     CHALLENGE_STARTDATE_ERROR(400, "시작일은 종료일보다 이전이어야 합니다."),
-    INVALID_SECRET_KEY(400, "비밀방은 비밀번호가 필요합니다.");
+    INVALID_SECRET_KEY(400, "비밀방은 비밀번호가 필요합니다."),
+    SECRET_KEY_REQUIRED(400, "비밀방은 비밀번호가 반드시 필요합니다."),
+    SECRET_KEY_NOT_ALLOWED(400, "공개방은 비밀번호를 설정할 수 없습니다.");;
 
     private final int code;
     private final String message;

@@ -13,20 +13,20 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Embeddable
+import java.io.Serializable;
+
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class ImageReference {
+public class ImageReference implements Serializable {
 
-    @Enumerated(EnumType.STRING)
     private MappingType type;
     private Long refId;
 
     @Getter
     @AllArgsConstructor
     public enum MappingType {
-
         MEMBER(Member.class),
         ACTION(Action.class),
         CHALLENGE(Challenge.class),

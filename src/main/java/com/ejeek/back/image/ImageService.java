@@ -27,8 +27,8 @@ public class ImageService {
     }
 
     public Image updateImage(MultipartFile file, ImageReferable entity) {
-        ImageReference reference = new ImageReference(entity.getImageMappingType(), entity.getRefId());
-        List<Image> imageList = imageRepository.findByReference(reference);
+//        ImageReference reference = new ImageReference(entity.getImageMappingType(), entity.getRefId());
+        List<Image> imageList = imageRepository.findByTypeAndRefId(entity.getImageMappingType(), entity.getRefId());
         imageList.forEach(image -> s3UploadService.deleteFile(image.getUrl()));
         return createImage(file, entity);
     }

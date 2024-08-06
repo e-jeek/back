@@ -10,16 +10,28 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Hashtag {
 
-    @EmbeddedId
-    private HashtagReference reference;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @ManyToOne
-    @MapsId("refId")
-    @JoinColumn(name="ref_id")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private HashtagReference.MappingType type;
+
+    @Column(name = "ref_id", nullable = false)
+    private Long refId;
+
+    @Column(nullable = false)
+    private String tagName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ref_id", insertable = false, updatable = false)
     private Challenge challenge;
 
-    public Hashtag(HashtagReference reference) {
-        this.reference = reference;
+    public Hashtag(HashtagReference hashtagReference, String tagName) {
+        this.type = hashtagReference.getType();
+        this.refId = hashtagReference.getRefId();
+        this.tagName = tagName;
     }
 
     public void updateChallenge(Challenge challenge) {
