@@ -4,12 +4,13 @@ import com.ejeek.back.challenge.Challenge;
 import com.ejeek.back.global.audit.Timestamped;
 import com.ejeek.back.member.Member;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChallengeMember extends Timestamped {
 
     @Id
@@ -21,4 +22,9 @@ public class ChallengeMember extends Timestamped {
     @ManyToOne
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
+
+    public ChallengeMember(Member member, Challenge challenge) {
+        this.member = member;
+        this.challenge = challenge;
+    }
 }

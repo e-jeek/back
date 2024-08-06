@@ -16,7 +16,6 @@ import java.util.List;
 
 public class ChallengeDto {
 
-    @Data
     @Getter
     @NoArgsConstructor
     public static class Request {
@@ -37,7 +36,6 @@ public class ChallengeDto {
         private List<String> hashtags;
     }
 
-    @Data
     @Getter
     @AllArgsConstructor
     public static class Response {

@@ -1,5 +1,7 @@
 package com.ejeek.back.challenge;
 
+import com.ejeek.back.challenge.challenge_member.ChallengeMember;
+import com.ejeek.back.challenge.challenge_member.ChallengeMemberDto;
 import com.ejeek.back.challenge.challenge_member.ChallengeMemberRepository;
 import com.ejeek.back.global.exception.CustomException;
 import com.ejeek.back.global.exception.ExceptionCode;
@@ -107,5 +109,18 @@ public class ChallengeService {
         if (isExist) {
             throw new CustomException(ExceptionCode.PARTICIPANT_EXIST);
         }
+    }
+
+    public ChallengeMemberDto participateChallenge(Long challengeId, Member member) {
+        Challenge findChallenge = findVerifiedChallenge(challengeId);
+        ChallengeMember participation = new ChallengeMember(member, findChallenge);
+        ChallengeMember save = challengeMemberRepository.save(participation);
+        return new ChallengeMemberDto(save.getId(), save.getMember().getId(), save.getChallenge().getId());
+    }
+
+    public void withdrawChallenge(Long challengeId, Member member) {
+        ChallengeMember participation = challengeMemberRepository.findByChallengeIdAndMemberId(challengeId, member.getId())
+                        .orElseThrow(() -> new CustomException(ExceptionCode.CHALLENGE_MEMBER_NOT_FOUND));
+        challengeMemberRepository.delete(participation);
     }
 }

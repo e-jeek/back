@@ -1,5 +1,6 @@
 package com.ejeek.back.challenge;
 
+import com.ejeek.back.challenge.challenge_member.ChallengeMemberDto;
 import com.ejeek.back.global.response.MultiResponse;
 import com.ejeek.back.global.utils.UriCreator;
 import com.ejeek.back.member.Member;
@@ -59,6 +60,24 @@ public class ChallengeController {
         // TODO : @AuthenticationPrincipal MemberPrincipal 에서 Member 가져오기
         Member member = new Member(1L, "test@test.com");
         challengeService.deleteChallenge(challengeId, member);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/participate")
+    @ResponseBody
+    public ResponseEntity<ChallengeMemberDto> participateChallenge(@PathVariable(value = "id") Long challengeId) {
+        // TODO : @AuthenticationPrincipal MemberPrincipal 에서 Member 가져오기
+        Member member = new Member(1L, "test@test.com");
+        ChallengeMemberDto response = challengeService.participateChallenge(challengeId, member);
+        return ResponseEntity.created(UriCreator.createURI(response.getId())).body(response);
+    }
+
+    @DeleteMapping("/{id}/participate")
+    @ResponseBody
+    public ResponseEntity<ChallengeMemberDto> withdrawChallenge(@PathVariable(value = "id") Long challengeId) {
+        // TODO : @AuthenticationPrincipal MemberPrincipal 에서 Member 가져오기
+        Member member = new Member(1L, "test@test.com");
+        challengeService.withdrawChallenge(challengeId, member);
         return ResponseEntity.noContent().build();
     }
 }
