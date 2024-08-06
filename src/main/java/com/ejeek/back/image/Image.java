@@ -1,5 +1,10 @@
 package com.ejeek.back.image;
 
+import com.ejeek.back.action.Action;
+import com.ejeek.back.challenge.Challenge;
+import com.ejeek.back.challenge.challenge_confirm.ChallengeConfirm;
+import com.ejeek.back.feed.Feed;
+import com.ejeek.back.member.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,17 +20,30 @@ public class Image {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
-    private ImageReference.MappingType type;
+    @Column(nullable = false)
+    private MappingType type;
 
-    @Column(name = "ref_id", nullable = false)
+    @Column(nullable = false)
     private Long refId;
 
+    @Column(nullable = false, length = 2500)
     private String url;
 
-    public Image(ImageReference reference, String url) {
-        this.type = reference.getType();
-        this.refId = reference.getRefId();
+    public Image(MappingType type, Long refId, String url) {
+        this.type = type;
+        this.refId = refId;
         this.url = url;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public enum MappingType {
+        MEMBER(Member.class),
+        ACTION(Action.class),
+        CHALLENGE(Challenge.class),
+        FEED(Feed.class),
+        CHALLENGE_CONFIRM(ChallengeConfirm.class);
+
+        private final Class<?> mappingTypeClass;
     }
 }

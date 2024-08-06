@@ -21,13 +21,11 @@ public class ImageService {
 
     public Image createImage(MultipartFile file, ImageReferable entity) {
         String filePath = upload(file);
-        ImageReference reference = new ImageReference(entity.getImageMappingType(), entity.getRefId());
-        Image image = new Image(reference, filePath);
+        Image image = new Image(entity.getImageMappingType(), entity.getRefId(), filePath);
         return imageRepository.save(image);
     }
 
     public Image updateImage(MultipartFile file, ImageReferable entity) {
-//        ImageReference reference = new ImageReference(entity.getImageMappingType(), entity.getRefId());
         List<Image> imageList = imageRepository.findByTypeAndRefId(entity.getImageMappingType(), entity.getRefId());
         imageList.forEach(image -> s3UploadService.deleteFile(image.getUrl()));
         return createImage(file, entity);

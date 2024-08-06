@@ -1,10 +1,10 @@
 package com.ejeek.back.global.referable;
 
-import com.ejeek.back.hashtag.HashtagReference;
+import com.ejeek.back.hashtag.Hashtag;
 
 public interface HashtagReferable {
 
-    HashtagReference.MappingType getHashtagMappingType();
+    Hashtag.MappingType getHashtagMappingType();
 
     Long getRefId();
 }

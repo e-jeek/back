@@ -10,8 +10,7 @@ import com.ejeek.back.global.exception.ExceptionCode;
 import com.ejeek.back.global.referable.HashtagReferable;
 import com.ejeek.back.global.referable.ImageReferable;
 import com.ejeek.back.hashtag.Hashtag;
-import com.ejeek.back.hashtag.HashtagReference;
-import com.ejeek.back.image.ImageReference;
+import com.ejeek.back.image.Image;
 import com.ejeek.back.member.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -103,13 +102,13 @@ public class Challenge extends Timestamped implements ImageReferable, HashtagRef
     }
 
     @Override
-    public ImageReference.MappingType getImageMappingType() {
-        return ImageReference.MappingType.CHALLENGE;
+    public Image.MappingType getImageMappingType() {
+        return Image.MappingType.CHALLENGE;
     }
 
     @Override
-    public HashtagReference.MappingType getHashtagMappingType() {
-        return HashtagReference.MappingType.CHALLENGE;
+    public Hashtag.MappingType getHashtagMappingType() {
+        return Hashtag.MappingType.CHALLENGE;
     }
 
     @Override

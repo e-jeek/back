@@ -16,14 +16,9 @@ public class HashtagService {
     public List<Hashtag> createHashtags(List<String> tagNames, HashtagReferable entity) {
         List<Hashtag> hashtags = new ArrayList<>();
         for (String tagName : tagNames) {
-            Hashtag hashtag = createHashtag(tagName, entity);
+            Hashtag hashtag = new Hashtag(entity.getHashtagMappingType(), entity.getRefId(), tagName);
             hashtags.add(hashtag);
         }
         return hashtags;
-    }
-
-    private Hashtag createHashtag(String tagName, HashtagReferable entity) {
-        HashtagReference hashtagReference = new HashtagReference(entity.getHashtagMappingType(), entity.getRefId());
-        return new Hashtag(hashtagReference, tagName);
     }
 }

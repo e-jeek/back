@@ -4,7 +4,6 @@ import com.ejeek.back.challenge.Challenge;
 import com.ejeek.back.global.audit.Timestamped;
 import com.ejeek.back.global.referable.ImageReferable;
 import com.ejeek.back.image.Image;
-import com.ejeek.back.image.ImageReference;
 import com.ejeek.back.member.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -28,8 +27,8 @@ public class ChallengeConfirm extends Timestamped implements ImageReferable {
     private String content;
 
     @Override
-    public ImageReference.MappingType getImageMappingType() {
-        return ImageReference.MappingType.CHALLENGE_CONFIRM;
+    public Image.MappingType getImageMappingType() {
+        return Image.MappingType.CHALLENGE_CONFIRM;
     }
 
     @Override
