@@ -1,5 +1,8 @@
 package com.ejeek.back.challenge;
 
+import com.ejeek.back.challenge.challenge_confirm.ChallengeConfirm;
+import com.ejeek.back.challenge.challenge_confirm.ChallengeConfirmDto;
+import com.ejeek.back.challenge.challenge_confirm.ChallengeConfirmRepository;
 import com.ejeek.back.challenge.challenge_member.ChallengeMember;
 import com.ejeek.back.challenge.challenge_member.ChallengeMemberDto;
 import com.ejeek.back.challenge.challenge_member.ChallengeMemberRepository;
@@ -20,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -28,42 +32,47 @@ public class ChallengeService {
 
     private final ChallengeMapper challengeMapper;
     private final ChallengeRepository challengeRepository;
+    private final ChallengeConfirmRepository challengeConfirmRepository;
     private final ChallengeMemberRepository challengeMemberRepository;
     private final ImageService imageService;
     private final HashtagService hashtagService;
     private final PasswordEncoder passwordEncoder;
 
-    public ChallengeDto.Response createChallenge(Member member, ChallengeDto.Request request, MultipartFile file) {
+    public ChallengeDto.Response createChallenge(Member member, ChallengeDto.Request request, MultipartFile multipartFile) {
         Challenge challenge = challengeMapper.toChallenge(request, member);
         challenge.encryptSecretKey(passwordEncoder);
         Challenge save = challengeRepository.save(challenge);
 
-        Image image = imageService.createImage(file, save);
-        save.updateImgUrl(image.getUrl());
+        Optional.ofNullable(multipartFile).ifPresent(file -> {
+            Image image = imageService.createImage(file, save);
+            save.updateImgUrl(image);
+        });
 
         List<Hashtag> hashtags = hashtagService.createHashtags(request.getHashtags(), save);
         save.updateHashtags(hashtags);
-        return challengeMapper.toResponse(save);
+        return challengeMapper.toChallengeResponse(save);
     }
 
     public ChallengeDto.Response modifyChallenge(Long challengeId, Member member, ChallengeDto.Request request,
-                    MultipartFile file) {
+                    MultipartFile multipartFile) {
         Challenge findChallenge = ensureChallengeIsEditable(challengeId, member);
         findChallenge.updateChallengeByDto(request);
         findChallenge.encryptSecretKey(passwordEncoder);
 
-        Image image = imageService.updateImage(file, findChallenge);
-        findChallenge.updateImgUrl(image.getUrl());
+        Optional.ofNullable(multipartFile).ifPresent(file -> {
+            Image image = imageService.updateImage(file, findChallenge);
+            findChallenge.updateImgUrl(image);
+        });
 
         List<Hashtag> hashtags = hashtagService.createHashtags(request.getHashtags(), findChallenge);
         findChallenge.updateHashtags(hashtags);
-        return challengeMapper.toResponse(findChallenge);
+        return challengeMapper.toChallengeResponse(findChallenge);
     }
 
     @Transactional(readOnly = true)
     public ChallengeDto.Response getChallenge(Long challengeId) {
         Challenge findChallenge = findVerifiedChallenge(challengeId);
-        return challengeMapper.toResponse(findChallenge);
+        return challengeMapper.toChallengeResponse(findChallenge);
     }
 
     /*
@@ -76,13 +85,37 @@ public class ChallengeService {
     @Transactional(readOnly = true)
     public Slice<ChallengeDto.Response> getChallenges(Pageable pageable) {
         Slice<Challenge> challenges = challengeRepository.findAll(pageable);
-        List<ChallengeDto.Response> responseList = challengeMapper.toReponseList(challenges.getContent());
+        List<ChallengeDto.Response> responseList = challengeMapper.toChallengeResponseList(challenges.getContent());
         return new SliceImpl<>(responseList, challenges.getPageable(), challenges.hasNext());
     }
 
     public void deleteChallenge(Long challengeId, Member member) {
         Challenge findChallenge = ensureChallengeIsEditable(challengeId, member);
         challengeRepository.delete(findChallenge);
+    }
+
+    public ChallengeMemberDto participateChallenge(Long challengeId, Member member) {
+        Challenge findChallenge = findVerifiedChallenge(challengeId);
+        ChallengeMember participation = new ChallengeMember(member, findChallenge);
+        ChallengeMember save = challengeMemberRepository.save(participation);
+        return new ChallengeMemberDto(save.getId(), save.getMember().getId(), save.getChallenge().getId());
+    }
+
+    public void withdrawChallenge(Long challengeId, Member member) {
+        ChallengeMember participation = findVerifiedChallengeMember(challengeId, member);
+        challengeMemberRepository.delete(participation);
+    }
+
+    public ChallengeConfirmDto.Response confirmChallenge(Long challengeId, Member member, ChallengeConfirmDto.Request request,
+                    MultipartFile file) {
+        Challenge findChallenge = findVerifiedChallenge(challengeId);
+        ChallengeConfirm challengeConfirm = challengeMapper.toConfirm(request, member, findChallenge);
+        ChallengeConfirm save = challengeConfirmRepository.save(challengeConfirm);
+
+        Image image = imageService.updateImage(file, save);
+        save.updateImage(image);
+
+        return challengeMapper.toConfirmResponse(save);
     }
 
     private Challenge ensureChallengeIsEditable(Long challengeId, Member member) {
@@ -98,6 +131,11 @@ public class ChallengeService {
                         .orElseThrow(() -> new CustomException(ExceptionCode.CHALLENGE_NOT_FOUND));
     }
 
+    private ChallengeMember findVerifiedChallengeMember(Long challengeId, Member member) {
+        return challengeMemberRepository.findByChallengeIdAndMemberId(challengeId, member.getId())
+                        .orElseThrow(() -> new CustomException(ExceptionCode.CHALLENGE_MEMBER_NOT_FOUND));
+    }
+
     private void verifySameMember(Member creator, Member loginMember) {
         if (!creator.getEmail().equals(loginMember.getEmail())) {
             throw new CustomException(ExceptionCode.MEMBER_NOT_SAME);
@@ -109,18 +147,5 @@ public class ChallengeService {
         if (isExist) {
             throw new CustomException(ExceptionCode.PARTICIPANT_EXIST);
         }
-    }
-
-    public ChallengeMemberDto participateChallenge(Long challengeId, Member member) {
-        Challenge findChallenge = findVerifiedChallenge(challengeId);
-        ChallengeMember participation = new ChallengeMember(member, findChallenge);
-        ChallengeMember save = challengeMemberRepository.save(participation);
-        return new ChallengeMemberDto(save.getId(), save.getMember().getId(), save.getChallenge().getId());
-    }
-
-    public void withdrawChallenge(Long challengeId, Member member) {
-        ChallengeMember participation = challengeMemberRepository.findByChallengeIdAndMemberId(challengeId, member.getId())
-                        .orElseThrow(() -> new CustomException(ExceptionCode.CHALLENGE_MEMBER_NOT_FOUND));
-        challengeMemberRepository.delete(participation);
     }
 }

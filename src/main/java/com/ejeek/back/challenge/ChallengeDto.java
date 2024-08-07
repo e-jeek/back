@@ -7,7 +7,6 @@ import com.ejeek.back.enums.Rule;
 import com.ejeek.back.member.MemberDto;
 import jakarta.validation.constraints.FutureOrPresent;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -36,6 +35,7 @@ public class ChallengeDto {
         private List<String> hashtags;
     }
 
+
     @Getter
     @AllArgsConstructor
     public static class Response {
@@ -53,7 +53,7 @@ public class ChallengeDto {
         private final String content;
         private final ChallengeStatus status;
         private final List<String> hashtags;
-        private final String imgUrl;
+        private final String imageUrl;
         private final LocalDateTime createdAt;
         private final LocalDateTime updateAt;
     }

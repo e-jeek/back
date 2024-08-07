@@ -1,15 +1,18 @@
 package com.ejeek.back.challenge;
 
+import com.ejeek.back.challenge.challenge_confirm.ChallengeConfirmDto;
 import com.ejeek.back.challenge.challenge_member.ChallengeMemberDto;
 import com.ejeek.back.global.response.MultiResponse;
 import com.ejeek.back.global.utils.UriCreator;
 import com.ejeek.back.member.Member;
+import com.ejeek.back.member.MemberPrincipal;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,9 +25,8 @@ public class ChallengeController {
 
     @PostMapping
     @ResponseBody
-    public ResponseEntity<ChallengeDto.Response> createChallenge(@Valid @RequestPart ChallengeDto.Request request,
-                    @RequestPart(required = false) MultipartFile file) {
-        // TODO : @AuthenticationPrincipal MemberPrincipal 에서 Member 가져오기
+    public ResponseEntity<ChallengeDto.Response> createChallenge(@AuthenticationPrincipal MemberPrincipal principal,
+                    @Valid @RequestPart ChallengeDto.Request request, @RequestPart(required = false) MultipartFile file) {
         Member member = new Member(1L, "test@test.com");
         ChallengeDto.Response response = challengeService.createChallenge(member, request, file);
         return ResponseEntity.created(UriCreator.createURI(response.getId())).body(response);
@@ -32,9 +34,9 @@ public class ChallengeController {
 
     @PatchMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<ChallengeDto.Response> updateChallenge(@PathVariable(value = "id") Long challengeId,
-                    @RequestPart ChallengeDto.Request request, @RequestPart MultipartFile file) {
-        // TODO : @AuthenticationPrincipal MemberPrincipal 에서 Member 가져오기
+    public ResponseEntity<ChallengeDto.Response> updateChallenge(@AuthenticationPrincipal MemberPrincipal principal,
+                    @PathVariable(value = "id") Long challengeId, @RequestPart ChallengeDto.Request request,
+                    @RequestPart(required = false) MultipartFile file) {
         Member member = new Member(1L, "test@test.com");
         ChallengeDto.Response response = challengeService.modifyChallenge(challengeId, member, request, file);
         return ResponseEntity.ok(response);
@@ -56,28 +58,41 @@ public class ChallengeController {
 
     @DeleteMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<ChallengeDto.Response> deleteChallenge(@PathVariable(value = "id") Long challengeId) {
-        // TODO : @AuthenticationPrincipal MemberPrincipal 에서 Member 가져오기
+    public ResponseEntity<ChallengeDto.Response> deleteChallenge(@AuthenticationPrincipal MemberPrincipal principal,
+                    @PathVariable(value = "id") Long challengeId) {
         Member member = new Member(1L, "test@test.com");
         challengeService.deleteChallenge(challengeId, member);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/participate")
+    @PostMapping("/{id}/participation")
     @ResponseBody
-    public ResponseEntity<ChallengeMemberDto> participateChallenge(@PathVariable(value = "id") Long challengeId) {
-        // TODO : @AuthenticationPrincipal MemberPrincipal 에서 Member 가져오기
+    public ResponseEntity<ChallengeMemberDto> participateChallenge(@AuthenticationPrincipal MemberPrincipal principal,
+                    @PathVariable(value = "id") Long challengeId) {
         Member member = new Member(1L, "test@test.com");
         ChallengeMemberDto response = challengeService.participateChallenge(challengeId, member);
         return ResponseEntity.created(UriCreator.createURI(response.getId())).body(response);
     }
 
-    @DeleteMapping("/{id}/participate")
+    @DeleteMapping("/{id}/participation")
     @ResponseBody
-    public ResponseEntity<ChallengeMemberDto> withdrawChallenge(@PathVariable(value = "id") Long challengeId) {
-        // TODO : @AuthenticationPrincipal MemberPrincipal 에서 Member 가져오기
+    public ResponseEntity<ChallengeMemberDto> withdrawChallenge(@AuthenticationPrincipal MemberPrincipal principal,
+                    @PathVariable(value = "id") Long challengeId) {
         Member member = new Member(1L, "test@test.com");
         challengeService.withdrawChallenge(challengeId, member);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{id}/confirmation")
+    @ResponseBody
+    public ResponseEntity<ChallengeConfirmDto.Response> confirmChallenge(@AuthenticationPrincipal MemberPrincipal principal,
+                    @PathVariable(value = "id") Long challengeId, @RequestPart ChallengeConfirmDto.Request request,
+                    @RequestPart MultipartFile file) {
+        Member member = new Member(1L, "test@test.com");
+        ChallengeConfirmDto.Response response = challengeService.confirmChallenge(challengeId, member, request, file);
+        return ResponseEntity.created(UriCreator.createURI(response.getId())).body(response);
+    }
+
+    // TODO 특정 Challenge 에 참여 중인 모든 member GetMapping API 필요
+    // TODO 관리자 -> 특정 challengeConfirm 을 confirm 을 true 로 변경할 수 있도록 하는 Mapping API 필요
 }

@@ -80,7 +80,9 @@ public class Challenge extends Timestamped implements ImageReferable, HashtagRef
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Hashtag> hashtags = new ArrayList<>();
 
-    private String imgUrl;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "image_id")
+    private Image image;
 
     @Builder
     public Challenge(Member member, String name, ChallengeType type, Capacity capacity, LocalDateTime dueDate,
@@ -142,8 +144,8 @@ public class Challenge extends Timestamped implements ImageReferable, HashtagRef
         this.status = status;
     }
 
-    public void updateImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
+    public void updateImgUrl(Image image) {
+        this.image = image;
     }
 
     public void updateHashtags(List<Hashtag> hashtags) {
