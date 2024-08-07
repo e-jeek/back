@@ -5,6 +5,7 @@ import com.ejeek.back.global.audit.Timestamped;
 import com.ejeek.back.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,6 +26,7 @@ public class ChallengeMember extends Timestamped {
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
 
+    @Builder
     public ChallengeMember(Member member, Challenge challenge) {
         this.member = member;
         this.challenge = challenge;

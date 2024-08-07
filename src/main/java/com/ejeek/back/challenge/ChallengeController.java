@@ -67,10 +67,10 @@ public class ChallengeController {
 
     @PostMapping("/{id}/participation")
     @ResponseBody
-    public ResponseEntity<ChallengeMemberDto> participateChallenge(@AuthenticationPrincipal MemberPrincipal principal,
+    public ResponseEntity<ChallengeMemberDto.Response> participateChallenge(@AuthenticationPrincipal MemberPrincipal principal,
                     @PathVariable(value = "id") Long challengeId) {
         Member member = new Member(1L, "test@test.com");
-        ChallengeMemberDto response = challengeService.participateChallenge(challengeId, member);
+        ChallengeMemberDto.Response response = challengeService.participateChallenge(challengeId, member);
         return ResponseEntity.created(UriCreator.createURI(response.getId())).body(response);
     }
 

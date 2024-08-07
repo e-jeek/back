@@ -94,11 +94,11 @@ public class ChallengeService {
         challengeRepository.delete(findChallenge);
     }
 
-    public ChallengeMemberDto participateChallenge(Long challengeId, Member member) {
+    public ChallengeMemberDto.Response participateChallenge(Long challengeId, Member member) {
         Challenge findChallenge = findVerifiedChallenge(challengeId);
-        ChallengeMember participation = new ChallengeMember(member, findChallenge);
+        ChallengeMember participation = challengeMapper.toChallengeMember(findChallenge, member);
         ChallengeMember save = challengeMemberRepository.save(participation);
-        return new ChallengeMemberDto(save.getId(), save.getMember().getId(), save.getChallenge().getId());
+        return challengeMapper.toChallengeMemberResponse(save);
     }
 
     public void withdrawChallenge(Long challengeId, Member member) {
@@ -109,13 +109,13 @@ public class ChallengeService {
     public ChallengeConfirmDto.Response confirmChallenge(Long challengeId, Member member, ChallengeConfirmDto.Request request,
                     MultipartFile file) {
         Challenge findChallenge = findVerifiedChallenge(challengeId);
-        ChallengeConfirm challengeConfirm = challengeMapper.toConfirm(request, member, findChallenge);
+        ChallengeConfirm challengeConfirm = challengeMapper.toChallengeConfirm(request, member, findChallenge);
         ChallengeConfirm save = challengeConfirmRepository.save(challengeConfirm);
 
         Image image = imageService.updateImage(file, save);
         save.updateImage(image);
 
-        return challengeMapper.toConfirmResponse(save);
+        return challengeMapper.toChallengeConfirmResponse(save);
     }
 
     private Challenge ensureChallengeIsEditable(Long challengeId, Member member) {

@@ -2,6 +2,8 @@ package com.ejeek.back.challenge;
 
 import com.ejeek.back.challenge.challenge_confirm.ChallengeConfirm;
 import com.ejeek.back.challenge.challenge_confirm.ChallengeConfirmDto;
+import com.ejeek.back.challenge.challenge_member.ChallengeMember;
+import com.ejeek.back.challenge.challenge_member.ChallengeMemberDto;
 import com.ejeek.back.hashtag.Hashtag;
 import com.ejeek.back.member.Member;
 import org.mapstruct.*;
@@ -27,15 +29,23 @@ public interface ChallengeMapper {
     @IterableMapping(qualifiedByName = "E2R")
     List<ChallengeDto.Response> toChallengeResponseList(List<Challenge> challenges);
 
+    @Mapping(target = "member", source = "member")
+    @Mapping(target = "challenge", source = "challenge")
+    ChallengeMember toChallengeMember(Challenge challenge, Member member);
+
+    @Mapping(target = "memberId", source = "challengeMember.member.id")
+    @Mapping(target = "challengeId", source = "challengeMember.challenge.id")
+    ChallengeMemberDto.Response toChallengeMemberResponse(ChallengeMember challengeMember);
+
     @Mapping(target = "content", source = "request.content")
     @Mapping(target = "member", source = "member")
     @Mapping(target = "challenge", source = "challenge")
-    ChallengeConfirm toConfirm(ChallengeConfirmDto.Request request, Member member, Challenge challenge);
+    ChallengeConfirm toChallengeConfirm(ChallengeConfirmDto.Request request, Member member, Challenge challenge);
 
     @Mapping(target = "memberId", source = "confirm.member.id")
     @Mapping(target = "challengeId", source = "confirm.challenge.id")
     @Mapping(target = "imageUrl", source = "confirm.image.url")
-    ChallengeConfirmDto.Response toConfirmResponse(ChallengeConfirm confirm);
+    ChallengeConfirmDto.Response toChallengeConfirmResponse(ChallengeConfirm confirm);
 
     default List<String> map(List<Hashtag> hashtags) {
         if (hashtags == null) {
