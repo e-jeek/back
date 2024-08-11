@@ -45,7 +45,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/authenticate").permitAll()
+                .requestMatchers("/api/members/login").permitAll()
                 .requestMatchers("/api/members/signup").permitAll()
                 .requestMatchers("/test").permitAll()
                 .requestMatchers("/h2-console").permitAll()
