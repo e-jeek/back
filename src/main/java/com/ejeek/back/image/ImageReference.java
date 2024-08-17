@@ -4,7 +4,7 @@ import com.ejeek.back.action.Action;
 import com.ejeek.back.challenge.Challenge;
 import com.ejeek.back.challenge.challenge_confirm.ChallengeConfirm;
 import com.ejeek.back.feed.Feed;
-import com.ejeek.back.member.Member;
+import com.ejeek.back.member.entity.Member;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
