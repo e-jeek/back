@@ -5,7 +5,7 @@ import com.ejeek.back.challenge.challenge_confirm.ChallengeConfirmDto;
 import com.ejeek.back.challenge.challenge_member.ChallengeMember;
 import com.ejeek.back.challenge.challenge_member.ChallengeMemberDto;
 import com.ejeek.back.hashtag.Hashtag;
-import com.ejeek.back.member.Member;
+import com.ejeek.back.member.entity.Member;
 import org.mapstruct.*;
 
 import java.util.ArrayList;

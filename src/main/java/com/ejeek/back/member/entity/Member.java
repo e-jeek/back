@@ -1,11 +1,11 @@
 package com.ejeek.back.member.entity;
 
 import com.ejeek.back.global.referable.ImageReferable;
-import com.ejeek.back.image.ImageReference;
 import com.ejeek.back.enums.Gender;
 import com.ejeek.back.enums.MemberStatus;
 import com.ejeek.back.enums.Role;
 import com.ejeek.back.global.audit.Timestamped;
+import com.ejeek.back.image.Image;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
@@ -57,8 +57,8 @@ public class Member extends Timestamped implements ImageReferable {
     private Boolean marketing;
 
     @Override
-    public ImageReference.MappingType getImageMappingType() {
-        return ImageReference.MappingType.MEMBER;
+    public Image.MappingType getImageMappingType() {
+        return Image.MappingType.MEMBER;
     }
 
     @Override

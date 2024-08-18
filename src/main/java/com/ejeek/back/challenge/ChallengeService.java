@@ -12,7 +12,7 @@ import com.ejeek.back.hashtag.Hashtag;
 import com.ejeek.back.hashtag.HashtagService;
 import com.ejeek.back.image.Image;
 import com.ejeek.back.image.ImageService;
-import com.ejeek.back.member.Member;
+import com.ejeek.back.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;

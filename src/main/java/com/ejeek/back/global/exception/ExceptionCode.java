@@ -21,7 +21,12 @@ public enum ExceptionCode {
     CHALLENGE_STARTDATE_ERROR(400, "시작일은 종료일보다 이전이어야 합니다."),
     INVALID_SECRET_KEY(400, "비밀방은 비밀번호가 필요합니다."),
     SECRET_KEY_REQUIRED(400, "비밀방은 비밀번호가 반드시 필요합니다."),
-    SECRET_KEY_NOT_ALLOWED(400, "공개방은 비밀번호를 설정할 수 없습니다.");
+    SECRET_KEY_NOT_ALLOWED(400, "공개방은 비밀번호를 설정할 수 없습니다."),
+    WEBSOCKET_KEY_ERROR(400, "키에 해당하는 값이 없습니다."),
+    WEBSOCKET_ATTRIBUTES_ERROR(400, "SessionAttributes가 null 입니다."),
+    WEBSOCKET_HEADER_ERROR(400, "Header가 올바르지 않습니다."),
+    CHALLENGE_MEMBER_NOT_FOUND(404, "챌린지에 참여중인 회원을 찾을 수 없습니다."),
+    MEMBER_NOT_FOUND(404, "회원을 찾을 수 없습니다.");
 
     private final int code;
     private final String message;

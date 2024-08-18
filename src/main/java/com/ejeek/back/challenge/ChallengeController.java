@@ -4,8 +4,7 @@ import com.ejeek.back.challenge.challenge_confirm.ChallengeConfirmDto;
 import com.ejeek.back.challenge.challenge_member.ChallengeMemberDto;
 import com.ejeek.back.global.response.MultiResponse;
 import com.ejeek.back.global.utils.UriCreator;
-import com.ejeek.back.member.Member;
-import com.ejeek.back.member.MemberPrincipal;
+import com.ejeek.back.member.entity.Member;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -25,19 +24,17 @@ public class ChallengeController {
 
     @PostMapping
     @ResponseBody
-    public ResponseEntity<ChallengeDto.Response> createChallenge(@AuthenticationPrincipal MemberPrincipal principal,
+    public ResponseEntity<ChallengeDto.Response> createChallenge(@AuthenticationPrincipal Member member,
                     @Valid @RequestPart ChallengeDto.Request request, @RequestPart(required = false) MultipartFile file) {
-        Member member = new Member(1L, "test@test.com");
         ChallengeDto.Response response = challengeService.createChallenge(member, request, file);
         return ResponseEntity.created(UriCreator.createURI(response.getId())).body(response);
     }
 
     @PatchMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<ChallengeDto.Response> updateChallenge(@AuthenticationPrincipal MemberPrincipal principal,
+    public ResponseEntity<ChallengeDto.Response> updateChallenge(@AuthenticationPrincipal Member member,
                     @PathVariable(value = "id") Long challengeId, @RequestPart ChallengeDto.Request request,
                     @RequestPart(required = false) MultipartFile file) {
-        Member member = new Member(1L, "test@test.com");
         ChallengeDto.Response response = challengeService.modifyChallenge(challengeId, member, request, file);
         return ResponseEntity.ok(response);
     }
@@ -58,37 +55,33 @@ public class ChallengeController {
 
     @DeleteMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<ChallengeDto.Response> deleteChallenge(@AuthenticationPrincipal MemberPrincipal principal,
+    public ResponseEntity<ChallengeDto.Response> deleteChallenge(@AuthenticationPrincipal Member member,
                     @PathVariable(value = "id") Long challengeId) {
-        Member member = new Member(1L, "test@test.com");
         challengeService.deleteChallenge(challengeId, member);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/participation")
     @ResponseBody
-    public ResponseEntity<ChallengeMemberDto.Response> participateChallenge(@AuthenticationPrincipal MemberPrincipal principal,
+    public ResponseEntity<ChallengeMemberDto.Response> participateChallenge(@AuthenticationPrincipal Member member,
                     @PathVariable(value = "id") Long challengeId) {
-        Member member = new Member(1L, "test@test.com");
         ChallengeMemberDto.Response response = challengeService.participateChallenge(challengeId, member);
         return ResponseEntity.created(UriCreator.createURI(response.getId())).body(response);
     }
 
     @DeleteMapping("/{id}/participation")
     @ResponseBody
-    public ResponseEntity<ChallengeMemberDto> withdrawChallenge(@AuthenticationPrincipal MemberPrincipal principal,
+    public ResponseEntity<ChallengeMemberDto> withdrawChallenge(@AuthenticationPrincipal Member member,
                     @PathVariable(value = "id") Long challengeId) {
-        Member member = new Member(1L, "test@test.com");
         challengeService.withdrawChallenge(challengeId, member);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/confirmation")
     @ResponseBody
-    public ResponseEntity<ChallengeConfirmDto.Response> confirmChallenge(@AuthenticationPrincipal MemberPrincipal principal,
+    public ResponseEntity<ChallengeConfirmDto.Response> confirmChallenge(@AuthenticationPrincipal Member member,
                     @PathVariable(value = "id") Long challengeId, @RequestPart ChallengeConfirmDto.Request request,
                     @RequestPart MultipartFile file) {
-        Member member = new Member(1L, "test@test.com");
         ChallengeConfirmDto.Response response = challengeService.confirmChallenge(challengeId, member, request, file);
         return ResponseEntity.created(UriCreator.createURI(response.getId())).body(response);
     }

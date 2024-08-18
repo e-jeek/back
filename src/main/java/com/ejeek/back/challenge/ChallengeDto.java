@@ -4,7 +4,7 @@ import com.ejeek.back.enums.Capacity;
 import com.ejeek.back.enums.ChallengeStatus;
 import com.ejeek.back.enums.ChallengeType;
 import com.ejeek.back.enums.Rule;
-import com.ejeek.back.member.MemberDto;
+import com.ejeek.back.member.dto.MemberDto;
 import jakarta.validation.constraints.FutureOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,7 +41,7 @@ public class ChallengeDto {
     public static class Response {
 
         private final Long id;
-        private final MemberDto.Response member;
+        private final MemberDto.SimpleResponse member;
         private final String name;
         private final ChallengeType type;
         private final Capacity capacity;
