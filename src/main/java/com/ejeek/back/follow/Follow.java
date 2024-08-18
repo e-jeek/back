@@ -1,7 +1,7 @@
 package com.ejeek.back.follow;
 
 import com.ejeek.back.global.audit.Timestamped;
-import com.ejeek.back.member.Member;
+import com.ejeek.back.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
