@@ -3,7 +3,7 @@ package com.ejeek.back.action.entity;
 import com.ejeek.back.global.audit.Timestamped;
 import com.ejeek.back.global.referable.ImageReferable;
 import com.ejeek.back.image.ImageReference;
-import com.ejeek.back.member.Member;
+import com.ejeek.back.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

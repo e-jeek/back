@@ -4,7 +4,7 @@ import com.ejeek.back.action.dto.WakeupLogDto;
 import com.ejeek.back.action.entity.WakeupLog;
 import com.ejeek.back.action.mapper.WakeupLogMapper;
 import com.ejeek.back.action.repository.WakeupLogRepository;
-import com.ejeek.back.member.Member;
+import com.ejeek.back.member.entity.Member;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;

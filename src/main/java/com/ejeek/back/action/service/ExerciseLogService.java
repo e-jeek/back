@@ -1,8 +1,7 @@
 package com.ejeek.back.action.service;
 
 import com.ejeek.back.action.dto.ExerciseLogDto;
-import com.ejeek.back.member.Member;
-import org.springframework.web.multipart.MultipartFile;
+import com.ejeek.back.member.entity.Member;
 
 import java.util.List;
 

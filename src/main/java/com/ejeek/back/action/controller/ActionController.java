@@ -6,7 +6,7 @@ import com.ejeek.back.action.dto.WakeupLogDto;
 import com.ejeek.back.action.service.DietLogService;
 import com.ejeek.back.action.service.ExerciseLogService;
 import com.ejeek.back.action.service.WakeupLogService;
-import com.ejeek.back.member.Member;
+import com.ejeek.back.member.entity.Member;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

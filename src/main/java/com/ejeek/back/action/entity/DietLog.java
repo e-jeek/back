@@ -1,7 +1,7 @@
 package com.ejeek.back.action.entity;
 
-import com.ejeek.back.member.Member;
 import com.ejeek.back.enums.DietType;
+import com.ejeek.back.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

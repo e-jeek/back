@@ -4,7 +4,7 @@ import com.ejeek.back.action.dto.ExerciseLogDto;
 import com.ejeek.back.action.entity.ExerciseLog;
 import com.ejeek.back.action.mapper.ExerciseLogMapper;
 import com.ejeek.back.action.repository.ExerciseLogRepository;
-import com.ejeek.back.member.Member;
+import com.ejeek.back.member.entity.Member;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
