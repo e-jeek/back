@@ -26,7 +26,8 @@ public enum ExceptionCode {
     WEBSOCKET_ATTRIBUTES_ERROR(400, "SessionAttributes가 null 입니다."),
     WEBSOCKET_HEADER_ERROR(400, "Header가 올바르지 않습니다."),
     CHALLENGE_MEMBER_NOT_FOUND(404, "챌린지에 참여중인 회원을 찾을 수 없습니다."),
-    MEMBER_NOT_FOUND(404, "회원을 찾을 수 없습니다.");
+    MEMBER_NOT_EXIST(408, "가입된 이메일 정보가 없습니다."),
+    MEMBER_PASSWORD_INCORRECT(408, "비밀번호 정보가 다릅니다.");
 
     private final int code;
     private final String message;

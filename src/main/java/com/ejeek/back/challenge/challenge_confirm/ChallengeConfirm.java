@@ -58,4 +58,8 @@ public class ChallengeConfirm extends Timestamped implements ImageReferable {
     public Long getRefId() {
         return this.id;
     }
+
+    public void updateConfirm(Boolean confirmed) {
+        this.confirmed = confirmed;
+    }
 }

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -106,8 +107,9 @@ public class ChallengeService {
         challengeMemberRepository.delete(participation);
     }
 
-    public ChallengeConfirmDto.Response confirmChallenge(Long challengeId, Member member, ChallengeConfirmDto.Request request,
+    public ChallengeConfirmDto.Response submitConfirmation(Long challengeId, Member member, ChallengeConfirmDto.Request request,
                     MultipartFile file) {
+        // TODO 같은 날짜에 동일한 사람이 인증 불가
         Challenge findChallenge = findVerifiedChallenge(challengeId);
         ChallengeConfirm challengeConfirm = challengeMapper.toChallengeConfirm(request, member, findChallenge);
         ChallengeConfirm save = challengeConfirmRepository.save(challengeConfirm);
@@ -116,6 +118,32 @@ public class ChallengeService {
         save.updateImage(image);
 
         return challengeMapper.toChallengeConfirmResponse(save);
+    }
+
+    public ChallengeConfirmDto.Response approveConfirmation(Member member, Long challengeId, Long confirmId, Boolean confirmed) {
+        Challenge findChallenge = findVerifiedChallenge(challengeId);
+        verifySameMember(member, findChallenge.getMember());
+        ChallengeConfirm challengeConfirm = findVerifiedChallengeConfirm(confirmId);
+        challengeConfirm.updateConfirm(confirmed);
+        return challengeMapper.toChallengeConfirmResponse(challengeConfirm);
+    }
+
+    public Slice<ChallengeConfirmDto.Response> getConfirmationsByDate(Member member, Long challengeId, LocalDate date,
+                    Pageable pageable) {
+        Challenge findChallenge = findVerifiedChallenge(challengeId);
+        verifySameMember(member, findChallenge.getMember());
+        Slice<ChallengeConfirm> challengeConfirms =
+                        challengeConfirmRepository.findAllByChallengeIdAndCreatedAt(challengeId, date, pageable);
+        List<ChallengeConfirmDto.Response> responseList =
+                        challengeMapper.toChallengeConfirmResponseList(challengeConfirms.getContent());
+        return new SliceImpl<>(responseList, challengeConfirms.getPageable(), challengeConfirms.hasNext());
+    }
+
+    public Slice<ChallengeMemberDto.Response> getParticipants(Long challengeId, Pageable pageable) {
+        Slice<ChallengeMember> challengeMembers = challengeMemberRepository.findByChallengeId(challengeId, pageable);
+        List<ChallengeMemberDto.Response> responseList =
+                        challengeMapper.toChallengeMemberResponseList(challengeMembers.getContent());
+        return new SliceImpl<>(responseList, challengeMembers.getPageable(), challengeMembers.hasNext());
     }
 
     private Challenge ensureChallengeIsEditable(Long challengeId, Member member) {
@@ -136,8 +164,13 @@ public class ChallengeService {
                         .orElseThrow(() -> new CustomException(ExceptionCode.CHALLENGE_MEMBER_NOT_FOUND));
     }
 
-    private void verifySameMember(Member creator, Member loginMember) {
-        if (!creator.getEmail().equals(loginMember.getEmail())) {
+    private ChallengeConfirm findVerifiedChallengeConfirm(Long confirmId) {
+        return challengeConfirmRepository.findById(confirmId)
+                        .orElseThrow(() -> new CustomException(ExceptionCode.CHALLENGE_MEMBER_NOT_FOUND));
+    }
+
+    private void verifySameMember(Member member, Member loginMember) {
+        if (!member.getEmail().equals(loginMember.getEmail())) {
             throw new CustomException(ExceptionCode.MEMBER_NOT_SAME);
         }
     }

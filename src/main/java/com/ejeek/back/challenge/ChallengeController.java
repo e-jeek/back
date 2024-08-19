@@ -10,10 +10,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/challenges")
@@ -77,15 +81,40 @@ public class ChallengeController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/confirmation")
+    @PostMapping("/{id}/confirmations")
     @ResponseBody
-    public ResponseEntity<ChallengeConfirmDto.Response> confirmChallenge(@AuthenticationPrincipal Member member,
+    public ResponseEntity<ChallengeConfirmDto.Response> submitConfirmations(@AuthenticationPrincipal Member member,
                     @PathVariable(value = "id") Long challengeId, @RequestPart ChallengeConfirmDto.Request request,
                     @RequestPart MultipartFile file) {
-        ChallengeConfirmDto.Response response = challengeService.confirmChallenge(challengeId, member, request, file);
+        ChallengeConfirmDto.Response response = challengeService.submitConfirmation(challengeId, member, request, file);
         return ResponseEntity.created(UriCreator.createURI(response.getId())).body(response);
     }
 
-    // TODO 특정 Challenge 에 참여 중인 모든 member GetMapping API 필요
-    // TODO 관리자 -> 특정 challengeConfirm 을 confirm 을 true 로 변경할 수 있도록 하는 Mapping API 필요
+    @PostMapping("/{id}/confirmations/{confirmId}")
+    @ResponseBody
+    public ResponseEntity<ChallengeConfirmDto.Response> approveConfirmation(@AuthenticationPrincipal Member member,
+                    @PathVariable(value = "id") Long challengeId, @PathVariable Long confirmId, @RequestParam Boolean confirm) {
+        ChallengeConfirmDto.Response response = challengeService.approveConfirmation(member, challengeId, confirmId, confirm);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/confirmations")
+    @ResponseBody
+    public ResponseEntity<MultiResponse<ChallengeConfirmDto.Response>> getConfirmations(@AuthenticationPrincipal Member member,
+                    @PathVariable(value = "id") Long challengeId, @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate date,
+                    @PageableDefault(size = 30) Pageable pageable) {
+        Slice<ChallengeConfirmDto.Response> slice = challengeService.getConfirmationsByDate(member, challengeId, date, pageable);
+        return ResponseEntity.ok(new MultiResponse<>(slice.getContent(), slice));
+    }
+
+    /**
+     * 챌린지 참가자 조회
+     */
+    @GetMapping("/{id}/participants")
+    @ResponseBody
+    public ResponseEntity<MultiResponse<ChallengeMemberDto.Response>> getParticipants(
+                    @PathVariable(value = "id") Long challengeId, @PageableDefault(size = 30) Pageable pageable) {
+        Slice<ChallengeMemberDto.Response> response = challengeService.getParticipants(challengeId, pageable);
+        return ResponseEntity.ok(new MultiResponse<>(response.getContent(), response));
+    }
 }

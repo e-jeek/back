@@ -17,5 +17,4 @@ public class ChallengeMemberDto {
         private final LocalDateTime createdAt;
         private final LocalDateTime updateAt;
     }
-
 }

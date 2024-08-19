@@ -1,6 +1,8 @@
 package com.ejeek.back.challenge.challenge_member;
 
 import com.ejeek.back.challenge.Challenge;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,4 +14,6 @@ public interface ChallengeMemberRepository extends JpaRepository<ChallengeMember
     boolean existsByChallenge(Challenge challenge);
 
     Optional<ChallengeMember> findByChallengeIdAndMemberId(Long challengeId, Long memberId);
+
+    Slice<ChallengeMember> findByChallengeId(Long challengeId, Pageable pageable);
 }
