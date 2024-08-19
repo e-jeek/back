@@ -1,6 +1,6 @@
 package com.ejeek.back.hashtag;
 
-import com.ejeek.back.challenge.Challenge;
+import com.ejeek.back.challenge.entity.Challenge;
 import com.ejeek.back.feed.Feed;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

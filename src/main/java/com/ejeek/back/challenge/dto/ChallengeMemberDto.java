@@ -1,4 +1,4 @@
-package com.ejeek.back.challenge.challenge_member;
+package com.ejeek.back.challenge.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

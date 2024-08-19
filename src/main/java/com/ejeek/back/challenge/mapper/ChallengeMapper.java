@@ -1,9 +1,11 @@
-package com.ejeek.back.challenge;
+package com.ejeek.back.challenge.mapper;
 
-import com.ejeek.back.challenge.challenge_confirm.ChallengeConfirm;
-import com.ejeek.back.challenge.challenge_confirm.ChallengeConfirmDto;
-import com.ejeek.back.challenge.challenge_member.ChallengeMember;
-import com.ejeek.back.challenge.challenge_member.ChallengeMemberDto;
+import com.ejeek.back.challenge.dto.ChallengeDto;
+import com.ejeek.back.challenge.entity.Challenge;
+import com.ejeek.back.challenge.entity.ChallengeConfirm;
+import com.ejeek.back.challenge.dto.ChallengeConfirmDto;
+import com.ejeek.back.challenge.entity.ChallengeMember;
+import com.ejeek.back.challenge.dto.ChallengeMemberDto;
 import com.ejeek.back.hashtag.Hashtag;
 import com.ejeek.back.member.entity.Member;
 import org.mapstruct.*;

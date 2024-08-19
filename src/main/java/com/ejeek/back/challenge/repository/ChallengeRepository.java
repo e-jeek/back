@@ -1,5 +1,6 @@
-package com.ejeek.back.challenge;
+package com.ejeek.back.challenge.repository;
 
+import com.ejeek.back.challenge.entity.Challenge;
 import com.ejeek.back.enums.ChallengeStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

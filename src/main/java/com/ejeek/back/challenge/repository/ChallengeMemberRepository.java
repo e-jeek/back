@@ -1,6 +1,7 @@
-package com.ejeek.back.challenge.challenge_member;
+package com.ejeek.back.challenge.repository;
 
-import com.ejeek.back.challenge.Challenge;
+import com.ejeek.back.challenge.entity.Challenge;
+import com.ejeek.back.challenge.entity.ChallengeMember;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;

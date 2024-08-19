@@ -1,5 +1,6 @@
-package com.ejeek.back.challenge;
+package com.ejeek.back.challenge.entity;
 
+import com.ejeek.back.challenge.dto.ChallengeDto;
 import com.ejeek.back.enums.Capacity;
 import com.ejeek.back.enums.ChallengeStatus;
 import com.ejeek.back.enums.ChallengeType;

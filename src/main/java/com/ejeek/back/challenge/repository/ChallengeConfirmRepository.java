@@ -1,5 +1,6 @@
-package com.ejeek.back.challenge.challenge_confirm;
+package com.ejeek.back.challenge.repository;
 
+import com.ejeek.back.challenge.entity.ChallengeConfirm;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;

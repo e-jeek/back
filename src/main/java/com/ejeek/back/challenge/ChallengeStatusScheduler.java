@@ -1,5 +1,7 @@
 package com.ejeek.back.challenge;
 
+import com.ejeek.back.challenge.entity.Challenge;
+import com.ejeek.back.challenge.repository.ChallengeRepository;
 import com.ejeek.back.enums.ChallengeStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;

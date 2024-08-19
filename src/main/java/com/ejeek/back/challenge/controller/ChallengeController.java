@@ -1,7 +1,9 @@
-package com.ejeek.back.challenge;
+package com.ejeek.back.challenge.controller;
 
-import com.ejeek.back.challenge.challenge_confirm.ChallengeConfirmDto;
-import com.ejeek.back.challenge.challenge_member.ChallengeMemberDto;
+import com.ejeek.back.challenge.dto.ChallengeConfirmDto;
+import com.ejeek.back.challenge.dto.ChallengeDto;
+import com.ejeek.back.challenge.dto.ChallengeMemberDto;
+import com.ejeek.back.challenge.service.ChallengeService;
 import com.ejeek.back.global.response.MultiResponse;
 import com.ejeek.back.global.utils.UriCreator;
 import com.ejeek.back.member.entity.Member;

@@ -1,6 +1,5 @@
-package com.ejeek.back.challenge.challenge_confirm;
+package com.ejeek.back.challenge.entity;
 
-import com.ejeek.back.challenge.Challenge;
 import com.ejeek.back.global.audit.Timestamped;
 import com.ejeek.back.global.referable.ImageReferable;
 import com.ejeek.back.image.Image;

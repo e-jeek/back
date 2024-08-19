@@ -1,4 +1,4 @@
-package com.ejeek.back.challenge;
+package com.ejeek.back.challenge.dto;
 
 import com.ejeek.back.enums.Capacity;
 import com.ejeek.back.enums.ChallengeStatus;
