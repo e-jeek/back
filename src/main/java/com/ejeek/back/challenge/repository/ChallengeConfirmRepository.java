@@ -15,4 +15,8 @@ public interface ChallengeConfirmRepository extends JpaRepository<ChallengeConfi
     @Query(value = "SELECT * FROM challenge_confirm c WHERE c.challenge_id = :challengeId AND DATE(c.created_at) = :date",
                     nativeQuery = true)
     Slice<ChallengeConfirm> findAllByChallengeIdAndCreatedAt(Long challengeId, LocalDate date, Pageable pageable);
+
+    @Query(value = "SELECT COUNT(*) FROM challenge_confirm c WHERE c.challenge_id = :challengeId AND c.member_id = :memberId AND DATE(c.created_at) = :date",
+                    nativeQuery = true)
+    Long countByChallengeAndMemberAndCreatedAt(Long challengeId, Long memberId, LocalDate date);
 }

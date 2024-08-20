@@ -1,13 +1,13 @@
 package com.ejeek.back.challenge.service;
 
+import com.ejeek.back.challenge.dto.ChallengeConfirmDto;
 import com.ejeek.back.challenge.dto.ChallengeDto;
+import com.ejeek.back.challenge.dto.ChallengeMemberDto;
 import com.ejeek.back.challenge.entity.Challenge;
 import com.ejeek.back.challenge.entity.ChallengeConfirm;
-import com.ejeek.back.challenge.dto.ChallengeConfirmDto;
+import com.ejeek.back.challenge.entity.ChallengeMember;
 import com.ejeek.back.challenge.mapper.ChallengeMapper;
 import com.ejeek.back.challenge.repository.ChallengeConfirmRepository;
-import com.ejeek.back.challenge.entity.ChallengeMember;
-import com.ejeek.back.challenge.dto.ChallengeMemberDto;
 import com.ejeek.back.challenge.repository.ChallengeMemberRepository;
 import com.ejeek.back.challenge.repository.ChallengeRepository;
 import com.ejeek.back.global.exception.CustomException;
@@ -113,8 +113,9 @@ public class ChallengeService {
 
     public ChallengeConfirmDto.Response submitConfirmation(Long challengeId, Member member, ChallengeConfirmDto.Request request,
                     MultipartFile file) {
-        // TODO 같은 날짜에 동일한 사람이 인증 불가
         Challenge findChallenge = findVerifiedChallenge(challengeId);
+        checkIfChallengeAlreadyConfirmedBySameMember(findChallenge, member);
+
         ChallengeConfirm challengeConfirm = challengeMapper.toChallengeConfirm(request, member, findChallenge);
         ChallengeConfirm save = challengeConfirmRepository.save(challengeConfirm);
 
@@ -183,6 +184,14 @@ public class ChallengeService {
         boolean isExist = challengeMemberRepository.existsByChallenge(challenge);
         if (isExist) {
             throw new CustomException(ExceptionCode.PARTICIPANT_EXIST);
+        }
+    }
+
+    public void checkIfChallengeAlreadyConfirmedBySameMember(Challenge challenge, Member member) {
+        LocalDate date = LocalDate.now();
+        Long count = challengeConfirmRepository.countByChallengeAndMemberAndCreatedAt(challenge.getId(), member.getId(), date);
+        if (count > 0) {
+            throw new CustomException(ExceptionCode.DUPLICATE_CHALLENGE_CONFIRM);
         }
     }
 }
