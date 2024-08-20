@@ -133,6 +133,7 @@ public class ChallengeService {
         return challengeMapper.toChallengeConfirmResponse(challengeConfirm);
     }
 
+    @Transactional(readOnly = true)
     public Slice<ChallengeConfirmDto.Response> getConfirmationsByDate(Member member, Long challengeId, LocalDate date,
                     Pageable pageable) {
         Challenge findChallenge = findVerifiedChallenge(challengeId);
@@ -144,6 +145,7 @@ public class ChallengeService {
         return new SliceImpl<>(responseList, challengeConfirms.getPageable(), challengeConfirms.hasNext());
     }
 
+    @Transactional(readOnly = true)
     public Slice<ChallengeMemberDto.Response> getParticipants(Long challengeId, Pageable pageable) {
         Slice<ChallengeMember> challengeMembers = challengeMemberRepository.findByChallengeId(challengeId, pageable);
         List<ChallengeMemberDto.Response> responseList =
@@ -187,7 +189,7 @@ public class ChallengeService {
         }
     }
 
-    public void checkIfChallengeAlreadyConfirmedBySameMember(Challenge challenge, Member member) {
+    private void checkIfChallengeAlreadyConfirmedBySameMember(Challenge challenge, Member member) {
         LocalDate date = LocalDate.now();
         Long count = challengeConfirmRepository.countByChallengeAndMemberAndCreatedAt(challenge.getId(), member.getId(), date);
         if (count > 0) {

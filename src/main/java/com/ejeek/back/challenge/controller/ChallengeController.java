@@ -109,9 +109,6 @@ public class ChallengeController {
         return ResponseEntity.ok(new MultiResponse<>(slice.getContent(), slice));
     }
 
-    /**
-     * 챌린지 참가자 조회
-     */
     @GetMapping("/{id}/participants")
     @ResponseBody
     public ResponseEntity<MultiResponse<ChallengeMemberDto.Response>> getParticipants(
