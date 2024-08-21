@@ -62,7 +62,7 @@ public class WakeupLogServiceImpl implements WakeupLogService {
 
     @Override
     public List<WakeupLogDto.Response> getAllWakeupLog(Member member) {
-        List<WakeupLog> wakeupLogs = wakeupLogRepository.findByMember(member, Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<WakeupLog> wakeupLogs = wakeupLogRepository.findByMember(member);
         return wakeupLogs.stream()
                 .map(wakeupLogMapper::toResponse)
                 .collect(Collectors.toList());

@@ -62,7 +62,7 @@ public class DietLogServiceImpl implements DietLogService{
 
     @Override
     public List<DietLogDto.Response> getAllDietLog(Member member) {
-        List<DietLog> dietLogs = dietLogRepository.findByMember(member, Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<DietLog> dietLogs = dietLogRepository.findByMember(member);
         return dietLogs.stream()
                 .map(dietLogMapper::toResponse)
                 .collect(Collectors.toList());

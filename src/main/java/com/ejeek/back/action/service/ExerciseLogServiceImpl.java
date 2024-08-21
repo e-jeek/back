@@ -62,7 +62,7 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
 
     @Override
     public List<ExerciseLogDto.Response> getAllExerciseLog(Member member) {
-        List<ExerciseLog> exerciseLogs = exerciseLogRepository.findByMember(member, Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<ExerciseLog> exerciseLogs = exerciseLogRepository.findByMember(member);
         return exerciseLogs.stream()
                 .map(exerciseLogMapper::toResponse)
                 .collect(Collectors.toList());

@@ -10,5 +10,5 @@ import java.util.List;
 
 @Repository
 public interface WakeupLogRepository extends JpaRepository<WakeupLog, Long> {
-    List<WakeupLog> findByMember(Member member, Sort sort);
+    List<WakeupLog> findByMember(Member member);
 }

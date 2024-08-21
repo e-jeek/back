@@ -10,5 +10,5 @@ import java.util.List;
 
 @Repository
 public interface ExerciseLogRepository extends JpaRepository<ExerciseLog, Long> {
-    List<ExerciseLog> findByMember(Member member, Sort sort);
+    List<ExerciseLog> findByMember(Member member);
 }

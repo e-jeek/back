@@ -10,5 +10,5 @@ import java.util.List;
 
 @Repository
 public interface DietLogRepository extends JpaRepository<DietLog, Long> {
-    List<DietLog> findByMember(Member member, Sort sort);
+    List<DietLog> findByMember(Member member);
 }
