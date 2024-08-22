@@ -145,7 +145,7 @@ public class Challenge extends Timestamped implements ImageReferable, HashtagRef
         this.status = status;
     }
 
-    public void updateImgUrl(Image image) {
+    public void updateImage(Image image) {
         this.image = image;
     }
 

@@ -50,7 +50,7 @@ public class ChallengeService {
 
         Optional.ofNullable(multipartFile).ifPresent(file -> {
             Image image = imageService.createImage(file, save);
-            save.updateImgUrl(image);
+            save.updateImage(image);
         });
 
         List<Hashtag> hashtags = hashtagService.createHashtags(request.getHashtags(), save);
@@ -66,7 +66,7 @@ public class ChallengeService {
 
         Optional.ofNullable(multipartFile).ifPresent(file -> {
             Image image = imageService.updateImage(file, findChallenge);
-            findChallenge.updateImgUrl(image);
+            findChallenge.updateImage(image);
         });
 
         List<Hashtag> hashtags = hashtagService.createHashtags(request.getHashtags(), findChallenge);
