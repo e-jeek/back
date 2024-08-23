@@ -32,6 +32,18 @@ public class WakeupLogServiceImpl implements WakeupLogService {
         return wakeupLogMapper.toResponse(savedWakeupLog);
     }
 
+    @Transactional
+    public WakeupLogDto.Response getWakeupLogById(Long id, Member member) {
+        WakeupLog wakeupLog = wakeupLogRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("WakeupLog not found with id " + id));
+
+        if (!wakeupLog.getMember().getId().equals(member.getId())) {
+            throw new AccessDeniedException("You do not have permission to access this wakeup log");
+        }
+
+        return wakeupLogMapper.toResponse(wakeupLog);
+    }
+
     @Override
     @Transactional
     public WakeupLogDto.Response updateWakeupLog(Long id, WakeupLogDto.UpdateRequest request, Member member) {

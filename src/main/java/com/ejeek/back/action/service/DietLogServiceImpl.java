@@ -31,6 +31,17 @@ public class DietLogServiceImpl implements DietLogService{
         DietLog savedDietLog = dietLogRepository.save(dietLog);
         return dietLogMapper.toResponse(savedDietLog);
     }
+    @Transactional
+    public DietLogDto.Response getDietLogById(Long id, Member member) {
+        DietLog dietLog = dietLogRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("DietLog not found with id " + id));
+
+        if (!dietLog.getMember().getId().equals(member.getId())) {
+            throw new AccessDeniedException("You do not have permission to access this log");
+        }
+
+        return dietLogMapper.toResponse(dietLog);
+    }
 
     @Override
     @Transactional

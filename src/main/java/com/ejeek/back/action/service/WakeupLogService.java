@@ -9,8 +9,9 @@ public interface WakeupLogService {
 
     WakeupLogDto.Response createWakeupLog(WakeupLogDto.CreateRequest request, Member member);
 
-    WakeupLogDto.Response updateWakeupLog(Long id, WakeupLogDto.UpdateRequest request, Member member);
+    WakeupLogDto.Response getWakeupLogById(Long id, Member member);
 
+    WakeupLogDto.Response updateWakeupLog(Long id, WakeupLogDto.UpdateRequest request, Member member);
 
     void deleteWakeupLog(Long id, Member member);
 

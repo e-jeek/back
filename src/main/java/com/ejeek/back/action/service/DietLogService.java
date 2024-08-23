@@ -9,6 +9,8 @@ public interface DietLogService {
 
     DietLogDto.Response createDietLog(DietLogDto.CreateRequest request, Member member);
 
+    DietLogDto.Response getDietLogById(Long id, Member member);
+
     DietLogDto.Response updateDietLog(Long id, DietLogDto.UpdateRequest request, Member member);
 
     void deleteDietLog(Long id, Member member);

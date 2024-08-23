@@ -20,7 +20,7 @@ public class DietLogController {
     private final DietLogService dietLogService;
 
     @PostMapping
-    public ResponseEntity<?> createDietLog(
+    public ResponseEntity<DietLogDto.Response> createDietLog(
             @RequestBody @Valid DietLogDto.CreateRequest requestDto,
             @AuthenticationPrincipal Member member) {
 
@@ -28,8 +28,17 @@ public class DietLogController {
         return ResponseEntity.created(UriCreator.createURI(response.getId())).body(response);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<DietLogDto.Response> getDietLogById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Member member) {
+
+        DietLogDto.Response response = dietLogService.getDietLogById(id, member);
+        return ResponseEntity.ok(response);
+    }
+
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateDietLog(
+    public ResponseEntity<DietLogDto.Response> updateDietLog(
             @PathVariable Long id,
             @RequestBody @Valid DietLogDto.UpdateRequest requestDto,
             @AuthenticationPrincipal Member member) {
@@ -39,7 +48,7 @@ public class DietLogController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteDietLog(
+    public ResponseEntity<Void> deleteDietLog(
             @PathVariable Long id,
             @AuthenticationPrincipal Member member) {
 

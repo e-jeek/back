@@ -28,8 +28,18 @@ public class WakeupLogController {
         return ResponseEntity.created(UriCreator.createURI(response.getId())).body(response);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<WakeupLogDto.Response> getWakeupLogById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Member member) {
+
+        WakeupLogDto.Response response = wakeupLogService.getWakeupLogById(id, member);
+        return ResponseEntity.ok(response);
+
+    }
+
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateWakeupLog(
+    public ResponseEntity<WakeupLogDto.Response> updateWakeupLog(
             @PathVariable Long id,
             @RequestBody @Valid WakeupLogDto.UpdateRequest requestDto,
             @AuthenticationPrincipal Member member) {
@@ -39,7 +49,7 @@ public class WakeupLogController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteWakeupLog(
+    public ResponseEntity<Void> deleteWakeupLog(
             @PathVariable Long id,
             @AuthenticationPrincipal Member member) {
 

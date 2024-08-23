@@ -20,7 +20,7 @@ public class ExerciseLogController {
     private final ExerciseLogService exerciseLogService;
 
     @PostMapping
-    public ResponseEntity<?> createExerciseLog(
+    public ResponseEntity<ExerciseLogDto.Response> createExerciseLog(
             @RequestBody @Valid ExerciseLogDto.CreateRequest requestDto,
             @AuthenticationPrincipal Member member) {
 
@@ -28,8 +28,18 @@ public class ExerciseLogController {
         return ResponseEntity.created(UriCreator.createURI(response.getId())).body(response);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ExerciseLogDto.Response> getExerciseLogById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Member member) {
+
+        ExerciseLogDto.Response response = exerciseLogService.getExerciseLogById(id, member);
+        return ResponseEntity.ok(response);
+
+    }
+
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateExerciseLog(
+    public ResponseEntity<ExerciseLogDto.Response> updateExerciseLog(
             @PathVariable Long id,
             @RequestBody @Valid ExerciseLogDto.UpdateRequest requestDto,
             @AuthenticationPrincipal Member member) {
@@ -39,7 +49,7 @@ public class ExerciseLogController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteExerciseLog(
+    public ResponseEntity<Void> deleteExerciseLog(
             @PathVariable Long id,
             @AuthenticationPrincipal Member member) {
 

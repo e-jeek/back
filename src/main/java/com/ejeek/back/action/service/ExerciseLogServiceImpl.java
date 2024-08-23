@@ -32,6 +32,18 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
         return exerciseLogMapper.toResponse(savedExerciseLog);
     }
 
+    @Transactional
+    public ExerciseLogDto.Response getExerciseLogById(Long id, Member member) {
+        ExerciseLog exercise = exerciseLogRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Exercise not found with id " + id));
+
+        if (!exercise.getMember().getId().equals(member.getId())) {
+            throw new AccessDeniedException("You do not have permission to access this exercise");
+        }
+
+        return exerciseLogMapper.toResponse(exercise);
+    }
+
     @Override
     @Transactional
     public ExerciseLogDto.Response updateExerciseLog(Long id, ExerciseLogDto.UpdateRequest request, Member member) {
