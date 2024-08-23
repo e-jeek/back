@@ -32,7 +32,8 @@ public class WakeupLogServiceImpl implements WakeupLogService {
         return wakeupLogMapper.toResponse(savedWakeupLog);
     }
 
-    @Transactional
+    @Override
+    @Transactional(readOnly = true)
     public WakeupLogDto.Response getWakeupLogById(Long id, Member member) {
         WakeupLog wakeupLog = wakeupLogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("WakeupLog not found with id " + id));
@@ -73,6 +74,7 @@ public class WakeupLogServiceImpl implements WakeupLogService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<WakeupLogDto.Response> getAllWakeupLog(Member member) {
         List<WakeupLog> wakeupLogs = wakeupLogRepository.findByMember(member);
         return wakeupLogs.stream()

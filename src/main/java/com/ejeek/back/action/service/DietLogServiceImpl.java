@@ -31,7 +31,9 @@ public class DietLogServiceImpl implements DietLogService{
         DietLog savedDietLog = dietLogRepository.save(dietLog);
         return dietLogMapper.toResponse(savedDietLog);
     }
-    @Transactional
+
+    @Override
+    @Transactional(readOnly = true)
     public DietLogDto.Response getDietLogById(Long id, Member member) {
         DietLog dietLog = dietLogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("DietLog not found with id " + id));
@@ -72,6 +74,7 @@ public class DietLogServiceImpl implements DietLogService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<DietLogDto.Response> getAllDietLog(Member member) {
         List<DietLog> dietLogs = dietLogRepository.findByMember(member);
         return dietLogs.stream()

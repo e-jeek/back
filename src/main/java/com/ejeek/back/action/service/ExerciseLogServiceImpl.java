@@ -32,7 +32,8 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
         return exerciseLogMapper.toResponse(savedExerciseLog);
     }
 
-    @Transactional
+    @Override
+    @Transactional(readOnly = true)
     public ExerciseLogDto.Response getExerciseLogById(Long id, Member member) {
         ExerciseLog exercise = exerciseLogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Exercise not found with id " + id));
@@ -73,6 +74,7 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ExerciseLogDto.Response> getAllExerciseLog(Member member) {
         List<ExerciseLog> exerciseLogs = exerciseLogRepository.findByMember(member);
         return exerciseLogs.stream()
