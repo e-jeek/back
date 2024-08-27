@@ -1,7 +1,6 @@
 package com.ejeek.back.member.entity;
 
 import com.ejeek.back.global.referable.ImageReferable;
-import com.ejeek.back.image.ImageReference;
 import com.ejeek.back.enums.Gender;
 import com.ejeek.back.enums.MemberStatus;
 import com.ejeek.back.enums.Role;
@@ -15,7 +14,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member extends Timestamped implements ImageReferable {
+public class Member extends Timestamped  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,7 +54,7 @@ public class Member extends Timestamped implements ImageReferable {
 
     @Column(nullable = false)
     private Boolean marketing;
-
+/*
     @Override
     public ImageReference.MappingType getImageMappingType() {
         return ImageReference.MappingType.MEMBER;
@@ -76,4 +75,6 @@ public class Member extends Timestamped implements ImageReferable {
         this.role = Role.USER;
     }
 
+
+ */
 }

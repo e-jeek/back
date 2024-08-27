@@ -1,6 +1,6 @@
 package com.ejeek.back.comment;
 
-import com.ejeek.back.feed.Feed;
+import com.ejeek.back.feed.entity.Feed;
 import com.ejeek.back.global.audit.Timestamped;
 import com.ejeek.back.member.entity.Member;
 import jakarta.persistence.*;

@@ -13,7 +13,9 @@ public enum ExceptionCode {
     EMPTY_FILE(400, "빈 파일입니다."),
     IMAGE_SAVE_FAIL(400, "이메일 저장이 실패했습니다."),
     MEMBER_NOT_EXIST(408, "가입된 이메일 정보가 없습니다."),
-    MEMBER_PASSWORD_INCORRECT(408, "비밀번호 정보가 다릅니다.");
+    MEMBER_PASSWORD_INCORRECT(408, "비밀번호 정보가 다릅니다."),
+    FEED_NOT_EXIST(404, "피드 정보가 존재하지않습니다."),
+    MEMBER_NOT_SAME(405, "권한이 없습니다.");
 
     private final int code;
     private final String message;
