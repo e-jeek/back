@@ -55,8 +55,8 @@ public class ChallengeController {
     @GetMapping
     @ResponseBody
     public ResponseEntity<MultiResponse<ChallengeDto.Response>> getChallenges(@PageableDefault(size = 30) Pageable pageable) {
-        Slice<ChallengeDto.Response> response = challengeService.getChallenges(pageable);
-        return ResponseEntity.ok(new MultiResponse<>(response.getContent(), response));
+        Slice<ChallengeDto.Response> slice = challengeService.getChallenges(pageable);
+        return ResponseEntity.ok(new MultiResponse<>(slice));
     }
 
     @DeleteMapping("/{id}")
@@ -106,14 +106,14 @@ public class ChallengeController {
                     @PathVariable(value = "id") Long challengeId, @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate date,
                     @PageableDefault(size = 30) Pageable pageable) {
         Slice<ChallengeConfirmDto.Response> slice = challengeService.getConfirmationsByDate(member, challengeId, date, pageable);
-        return ResponseEntity.ok(new MultiResponse<>(slice.getContent(), slice));
+        return ResponseEntity.ok(new MultiResponse<>(slice));
     }
 
     @GetMapping("/{id}/participants")
     @ResponseBody
     public ResponseEntity<MultiResponse<ChallengeMemberDto.Response>> getParticipants(
                     @PathVariable(value = "id") Long challengeId, @PageableDefault(size = 30) Pageable pageable) {
-        Slice<ChallengeMemberDto.Response> response = challengeService.getParticipants(challengeId, pageable);
-        return ResponseEntity.ok(new MultiResponse<>(response.getContent(), response));
+        Slice<ChallengeMemberDto.Response> slice = challengeService.getParticipants(challengeId, pageable);
+        return ResponseEntity.ok(new MultiResponse<>(slice));
     }
 }
