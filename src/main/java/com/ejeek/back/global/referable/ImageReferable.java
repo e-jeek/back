@@ -1,10 +1,10 @@
 package com.ejeek.back.global.referable;
 
-import com.ejeek.back.image.ImageReference;
+import com.ejeek.back.image.Image;
 
 public interface ImageReferable {
 
-    ImageReference.MappingType getImageMappingType();
+    Image.MappingType getImageMappingType();
 
     Long getRefId();
 }

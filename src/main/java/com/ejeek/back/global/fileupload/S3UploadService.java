@@ -30,6 +30,9 @@ public class S3UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    @Value("${cloud.aws.s3.bucket.url}")
+    private String bucketUrl;
+
     @Transactional
     public String saveUploadFile(MultipartFile multipartFile) {
         validateFileExits(multipartFile);
@@ -51,7 +54,8 @@ public class S3UploadService {
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 
-    public void deleteFile(String fileName) {
+    public void deleteFile(String url) {
+        String fileName = url.substring(url.indexOf(bucketUrl) + bucketUrl.length());
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
     }
 
