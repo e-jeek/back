@@ -1,24 +1,34 @@
-package com.ejeek.back.challenge.challenge_member;
+package com.ejeek.back.challenge.entity;
 
-import com.ejeek.back.challenge.Challenge;
+import com.ejeek.back.challenge.entity.Challenge;
 import com.ejeek.back.global.audit.Timestamped;
 import com.ejeek.back.member.entity.Member;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChallengeMember extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
+
+    @Builder
+    public ChallengeMember(Member member, Challenge challenge) {
+        this.member = member;
+        this.challenge = challenge;
+    }
 }

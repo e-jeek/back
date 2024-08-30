@@ -12,8 +12,8 @@ public class MultiResponse<T> {
     private final List<T> data;
     private final PageInfo pageInfo;
 
-    public MultiResponse(List<T> data, Slice<T> slice) {
-        this.data = data;
+    public MultiResponse(Slice<T> slice) {
+        this.data = slice.getContent();
         this.pageInfo = new PageInfo(slice.getNumber() + 1, slice.getSize(), slice.isFirst(), slice.isLast());
     }
 }
