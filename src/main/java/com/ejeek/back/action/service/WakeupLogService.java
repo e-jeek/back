@@ -3,6 +3,7 @@ package com.ejeek.back.action.service;
 import com.ejeek.back.action.dto.WakeupLogDto;
 import com.ejeek.back.member.entity.Member;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface WakeupLogService {
@@ -15,5 +16,5 @@ public interface WakeupLogService {
 
     void deleteWakeupLog(Long id, Member member);
 
-    List<WakeupLogDto.Response> getAllWakeupLog(Member member);
+    List<WakeupLogDto.Response> getAllWakeupLog(Member member, LocalDate date);
 }

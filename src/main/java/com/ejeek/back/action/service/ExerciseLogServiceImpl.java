@@ -12,6 +12,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,8 +76,8 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ExerciseLogDto.Response> getAllExerciseLog(Member member) {
-        List<ExerciseLog> exerciseLogs = exerciseLogRepository.findByMember(member);
+    public List<ExerciseLogDto.Response> getAllExerciseLog(Member member, LocalDate date) {
+        List<ExerciseLog> exerciseLogs = exerciseLogRepository.findByMemberAndDate(member, date);
         return exerciseLogs.stream()
                 .map(exerciseLogMapper::toResponse)
                 .collect(Collectors.toList());

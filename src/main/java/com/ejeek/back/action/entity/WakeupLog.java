@@ -7,7 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -17,11 +18,11 @@ import java.time.LocalDateTime;
 public class WakeupLog extends Action {
 
     @Column(nullable = false)
-    private LocalDateTime wakeupTime;
+    private LocalTime wakeupTime;
 
     @Builder
-    public WakeupLog(Member member, Integer score, String content, LocalDateTime wakeupTime) {
-        super(member, score, content);
+    public WakeupLog(LocalDate date, Member member, Integer score, String content, LocalTime wakeupTime) {
+        super(date, member, score, content);
         this.wakeupTime = wakeupTime;
     }
 

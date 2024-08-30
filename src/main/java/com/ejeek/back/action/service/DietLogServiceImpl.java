@@ -12,6 +12,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,8 +76,8 @@ public class DietLogServiceImpl implements DietLogService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<DietLogDto.Response> getAllDietLog(Member member) {
-        List<DietLog> dietLogs = dietLogRepository.findByMember(member);
+    public List<DietLogDto.Response> getAllDietLog(Member member, LocalDate date) {
+        List<DietLog> dietLogs = dietLogRepository.findByMemberAndDate(member, date);
         return dietLogs.stream()
                 .map(dietLogMapper::toResponse)
                 .collect(Collectors.toList());

@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,8 +25,8 @@ public class ExerciseLog extends Action {
     private Integer calories;
 
     @Builder
-    public ExerciseLog(Member member, Integer score, String content, String name, Integer duration, Integer calories) {
-        super(member, score, content); // 부모 클래스의 빌더 생성자 호출
+    public ExerciseLog(LocalDate date, Member member, Integer score, String content, String name, Integer duration, Integer calories) {
+        super(date, member, score, content); // 부모 클래스의 빌더 생성자 호출
         this.name = name;
         this.duration = duration;
         this.calories = calories;

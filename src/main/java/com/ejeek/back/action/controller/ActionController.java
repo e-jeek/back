@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -131,20 +132,26 @@ public class ActionController {
     }
 
     @GetMapping("/actions/exercise")
-    public ResponseEntity<List<ExerciseLogDto.Response>> getExerciseLogs(@AuthenticationPrincipal Member member) {
-        List<ExerciseLogDto.Response> logs = exerciseLogService.getAllExerciseLog(member);
+    public ResponseEntity<List<ExerciseLogDto.Response>> getExerciseLogs(
+            @AuthenticationPrincipal Member member,
+            @RequestParam(value = "date") LocalDate date) {
+        List<ExerciseLogDto.Response> logs = exerciseLogService.getAllExerciseLog(member, date);
         return ResponseEntity.ok(logs);
     }
 
     @GetMapping("/actions/diet")
-    public ResponseEntity<List<DietLogDto.Response>> getDietLogs(@AuthenticationPrincipal Member member) {
-        List<DietLogDto.Response> logs = dietLogService.getAllDietLog(member);
+    public ResponseEntity<List<DietLogDto.Response>> getDietLogs(
+            @AuthenticationPrincipal Member member,
+            @RequestParam(value = "date") LocalDate date) {
+        List<DietLogDto.Response> logs = dietLogService.getAllDietLog(member, date);
         return ResponseEntity.ok(logs);
     }
 
     @GetMapping("/actions/wakeup")
-    public ResponseEntity<List<WakeupLogDto.Response>> getWakeupLogs(@AuthenticationPrincipal Member member) {
-        List<WakeupLogDto.Response> logs = wakeupLogService.getAllWakeupLog(member);
+    public ResponseEntity<List<WakeupLogDto.Response>> getWakeupLogs(
+            @AuthenticationPrincipal Member member,
+            @RequestParam(value = "date") LocalDate date) {
+        List<WakeupLogDto.Response> logs = wakeupLogService.getAllWakeupLog(member, date);
         return ResponseEntity.ok(logs);
     }
 

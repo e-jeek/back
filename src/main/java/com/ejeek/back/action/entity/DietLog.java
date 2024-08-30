@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,8 +27,8 @@ public class DietLog extends Action {
     private Integer calories;
 
     @Builder
-    public DietLog(Member member, Integer score, String content, DietType dietType, String foodName, Integer calories) {
-        super(member, score, content);
+    public DietLog(LocalDate date, Member member, Integer score, String content, DietType dietType, String foodName, Integer calories) {
+        super(date, member, score, content);
         this.dietType = dietType;
         this.foodName = foodName;
         this.calories = calories;

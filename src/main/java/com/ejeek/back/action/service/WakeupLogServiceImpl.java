@@ -12,6 +12,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,8 +76,8 @@ public class WakeupLogServiceImpl implements WakeupLogService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<WakeupLogDto.Response> getAllWakeupLog(Member member) {
-        List<WakeupLog> wakeupLogs = wakeupLogRepository.findByMember(member);
+    public List<WakeupLogDto.Response> getAllWakeupLog(Member member, LocalDate date) {
+        List<WakeupLog> wakeupLogs = wakeupLogRepository.findByMemberAndDate(member, date);
         return wakeupLogs.stream()
                 .map(wakeupLogMapper::toResponse)
                 .collect(Collectors.toList());

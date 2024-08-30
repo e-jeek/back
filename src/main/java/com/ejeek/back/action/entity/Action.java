@@ -9,6 +9,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,6 +21,9 @@ public class Action extends Timestamped implements ImageReferable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private LocalDate date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
@@ -41,7 +46,8 @@ public class Action extends Timestamped implements ImageReferable {
     }
 
 
-    public Action(Member member, Integer score, String content) {
+    public Action(LocalDate date, Member member, Integer score, String content) {
+        this.date = date;
         this.member = member;
         this.score = score;
         this.content = content;
