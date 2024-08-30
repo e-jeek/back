@@ -2,13 +2,14 @@ package com.ejeek.back.action.service;
 
 import com.ejeek.back.action.dto.WakeupLogDto;
 import com.ejeek.back.member.entity.Member;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface WakeupLogService {
 
-    WakeupLogDto.Response createWakeupLog(WakeupLogDto.CreateRequest request, Member member);
+    WakeupLogDto.Response createWakeupLog(WakeupLogDto.CreateRequest request, Member member, MultipartFile multipartFile);
 
     WakeupLogDto.Response getWakeupLogById(Long id, Member member);
 

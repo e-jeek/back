@@ -1,5 +1,6 @@
 package com.ejeek.back.action.entity;
 
+import com.ejeek.back.image.Image;
 import com.ejeek.back.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -30,4 +31,6 @@ public class WakeupLog extends Action {
         super.setMember(member);
     }
 
+    public void updateImage(Image image) {
+    }
 }

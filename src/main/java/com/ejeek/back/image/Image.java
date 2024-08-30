@@ -1,6 +1,6 @@
 package com.ejeek.back.image;
 
-import com.ejeek.back.action.Action;
+import com.ejeek.back.action.entity.Action;
 import com.ejeek.back.challenge.entity.Challenge;
 import com.ejeek.back.challenge.entity.ChallengeConfirm;
 import com.ejeek.back.feed.Feed;

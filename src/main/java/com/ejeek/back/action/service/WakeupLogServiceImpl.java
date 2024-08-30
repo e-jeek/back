@@ -4,6 +4,8 @@ import com.ejeek.back.action.dto.WakeupLogDto;
 import com.ejeek.back.action.entity.WakeupLog;
 import com.ejeek.back.action.mapper.WakeupLogMapper;
 import com.ejeek.back.action.repository.WakeupLogRepository;
+import com.ejeek.back.image.Image;
+import com.ejeek.back.image.ImageService;
 import com.ejeek.back.member.entity.Member;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +13,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,14 +26,20 @@ public class WakeupLogServiceImpl implements WakeupLogService {
 
     private final WakeupLogRepository wakeupLogRepository;
     private final WakeupLogMapper wakeupLogMapper;
+    private final ImageService imageService;
 
     @Override
     @Transactional
-    public WakeupLogDto.Response createWakeupLog(WakeupLogDto.CreateRequest request, Member member) {
+    public WakeupLogDto.Response createWakeupLog(WakeupLogDto.CreateRequest request, Member member, MultipartFile multipartFile) {
         WakeupLog wakeupLog = wakeupLogMapper.toEntity(request);
         wakeupLog.setMember(member);
 
         WakeupLog savedWakeupLog = wakeupLogRepository.save(wakeupLog);
+
+        Optional.ofNullable(multipartFile).ifPresent(file -> {
+            Image image = imageService.createImage(file, savedWakeupLog);
+            savedWakeupLog.updateImage(image);
+        });
         return wakeupLogMapper.toResponse(savedWakeupLog);
     }
 

@@ -35,6 +35,10 @@ public class Action extends Timestamped implements ImageReferable {
     @Column(length = 500)
     private String content;
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "image_id")
+    private Image image;
+
     @Override
     public Image.MappingType getImageMappingType() {
         return Image.MappingType.ACTION;

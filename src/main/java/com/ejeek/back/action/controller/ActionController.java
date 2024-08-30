@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -34,6 +35,7 @@ public class ActionController {
     public ResponseEntity<?> createLog(
             @RequestParam("type") String type,
             @RequestBody @Valid Map<String, Object> requestBody,
+            @RequestPart(required = false) MultipartFile file,
             @AuthenticationPrincipal Member member) {
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -52,7 +54,7 @@ public class ActionController {
 
             case "WAKEUP":
                 WakeupLogDto.CreateRequest wakeupRequest = objectMapper.convertValue(requestBody, WakeupLogDto.CreateRequest.class);
-                response = wakeupLogService.createWakeupLog(wakeupRequest, member);
+                response = wakeupLogService.createWakeupLog(wakeupRequest, member, file);
                 break;
 
             default:
