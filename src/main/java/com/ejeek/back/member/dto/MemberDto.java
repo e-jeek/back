@@ -46,10 +46,10 @@ public class MemberDto {
         private Integer height;
         private Integer weight;
 
-        @NotEmpty
+
         private Boolean policy;
 
-        @NotEmpty
+
         private Boolean marketing;
 
     }

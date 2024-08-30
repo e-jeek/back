@@ -31,9 +31,12 @@ public class MemberService {
         validateDuplicateMember(request.getEmail());
         Member member = memberMapper.toEntity(request);
 
+
         member.updateEncryptedPassword(passwordEncoder.encode(member.getPassword()));
         member.updateStatus();
         member.updateRole();
+
+
 
         return memberMapper.memberToSimpleResponseDto(memberRepository.save(member));
     }

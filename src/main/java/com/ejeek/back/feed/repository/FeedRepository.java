@@ -8,5 +8,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FeedRepository extends JpaRepository<Feed, Long> {
-    List<Feed> findByMember (Member member);
+    List<Feed> findByMemberNickname (String memberNickname);
 }

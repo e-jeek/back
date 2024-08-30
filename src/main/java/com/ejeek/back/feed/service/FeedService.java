@@ -41,6 +41,8 @@ public class FeedService {
             Image img = imageService.createImage(file, savedFeed);
             savedFeed.updateImgUrl(img);
         });
+
+
         return feedMapper.toFeedDto(savedFeed);
 
 
@@ -52,13 +54,10 @@ public class FeedService {
         return feedMapper.toFeedDto(feed);
     }
 
-    //올바른멤버 검증...
-
-    //local-application.yml 파일 재적용
 
     @Transactional(readOnly = true)
-    public List<FeedDto.FeedResponse> getAllFeed(Member member) {
-        List<Feed> feeds = feedRepository.findByMember(member);
+    public List<FeedDto.FeedResponse> getAllFeed(String memberNickname) {
+        List<Feed> feeds = feedRepository.findByMemberNickname(memberNickname);
         List<FeedDto.FeedResponse> feedList = new ArrayList<>();
         feeds.forEach(s -> feedList.add(feedMapper.toFeedDto(s)));
         return feedList;
@@ -70,6 +69,7 @@ public class FeedService {
     public FeedDto.FeedResponse updateFeed(Long feedId, Member member, FeedDto.FeedUpdateRequest request, MultipartFile image) {
         Feed feed = isAuthorized(feedId, member);
         feed.updateFeedDto(request);
+
         List<Hashtag> hashtags = hashtagService.createHashtags(request.getHashtags(), feed);
         feed.updateHashtags(hashtags);
 

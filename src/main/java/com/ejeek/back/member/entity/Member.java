@@ -54,17 +54,19 @@ public class Member extends Timestamped  {
 
     @Column(nullable = false)
     private Boolean marketing;
-/*
+
+    /*
     @Override
     public ImageReference.MappingType getImageMappingType() {
         return ImageReference.MappingType.MEMBER;
     }
 
+
     @Override
     public Long getRefId() {
         return this.id;
     }
-
+*/
     public void updateEncryptedPassword(String password) {
         this.password = password;
     }
@@ -76,5 +78,5 @@ public class Member extends Timestamped  {
     }
 
 
- */
+
 }
