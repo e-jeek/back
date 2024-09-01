@@ -9,7 +9,6 @@ import com.ejeek.back.image.ImageService;
 import com.ejeek.back.member.entity.Member;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +30,7 @@ public class WakeupLogServiceImpl implements WakeupLogService {
     @Override
     @Transactional
     public WakeupLogDto.Response createWakeupLog(WakeupLogDto.CreateRequest request, Member member, MultipartFile multipartFile) {
-        WakeupLog wakeupLog = wakeupLogMapper.toEntity(request);
-        wakeupLog.setMember(member);
+        WakeupLog wakeupLog = wakeupLogMapper.toEntity(request, member);
 
         WakeupLog savedWakeupLog = wakeupLogRepository.save(wakeupLog);
 
@@ -58,7 +56,7 @@ public class WakeupLogServiceImpl implements WakeupLogService {
 
     @Override
     @Transactional
-    public WakeupLogDto.Response updateWakeupLog(Long id, WakeupLogDto.UpdateRequest request, Member member) {
+    public WakeupLogDto.Response updateWakeupLog(Long id, WakeupLogDto.UpdateRequest request, Member member, MultipartFile multipartFile) {
         WakeupLog wakeupLog = wakeupLogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("WakeupLog not found with id " + id));
 
@@ -66,8 +64,15 @@ public class WakeupLogServiceImpl implements WakeupLogService {
             throw new AccessDeniedException("You do not have permission to update this log");
         }
 
-        wakeupLogMapper.updateFromDto(request, wakeupLog);
+        wakeupLog.updateWakeupLog(request);
+
+        Optional.ofNullable(multipartFile).ifPresent(file -> {
+            Image image = imageService.updateImage(file, wakeupLog);
+            wakeupLog.updateImage(image);
+        });
+
         WakeupLog updatedWakeupLog = wakeupLogRepository.save(wakeupLog);
+
         return wakeupLogMapper.toResponse(updatedWakeupLog);
     }
 

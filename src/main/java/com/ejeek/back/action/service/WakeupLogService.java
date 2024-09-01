@@ -13,7 +13,7 @@ public interface WakeupLogService {
 
     WakeupLogDto.Response getWakeupLogById(Long id, Member member);
 
-    WakeupLogDto.Response updateWakeupLog(Long id, WakeupLogDto.UpdateRequest request, Member member);
+    WakeupLogDto.Response updateWakeupLog(Long id, WakeupLogDto.UpdateRequest request, Member member,  MultipartFile multipartFile);
 
     void deleteWakeupLog(Long id, Member member);
 

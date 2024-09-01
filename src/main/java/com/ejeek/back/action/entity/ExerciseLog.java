@@ -1,5 +1,7 @@
 package com.ejeek.back.action.entity;
 
+import com.ejeek.back.action.dto.ExerciseLogDto;
+import com.ejeek.back.action.dto.WakeupLogDto;
 import com.ejeek.back.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -26,13 +28,20 @@ public class ExerciseLog extends Action {
 
     @Builder
     public ExerciseLog(LocalDate date, Member member, Integer score, String content, String name, Integer duration, Integer calories) {
-        super(date, member, score, content); // 부모 클래스의 빌더 생성자 호출
+        super(date, member, score, content);
         this.name = name;
         this.duration = duration;
         this.calories = calories;
     }
 
-    public void setMember(Member member) {
-        super.setMember(member);
+    public void updateExerciseLog(ExerciseLogDto.UpdateRequest request) {
+        this.date = request.getDate();
+        this.content = request.getContent();
+        this.score = request.getScore();
+        this.name = name;
+        this.duration = duration;
+        this.calories = calories;
+
     }
+
 }

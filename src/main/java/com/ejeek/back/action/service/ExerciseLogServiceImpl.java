@@ -4,16 +4,19 @@ import com.ejeek.back.action.dto.ExerciseLogDto;
 import com.ejeek.back.action.entity.ExerciseLog;
 import com.ejeek.back.action.mapper.ExerciseLogMapper;
 import com.ejeek.back.action.repository.ExerciseLogRepository;
+import com.ejeek.back.image.Image;
+import com.ejeek.back.image.ImageService;
 import com.ejeek.back.member.entity.Member;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,14 +25,20 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
 
     private final ExerciseLogRepository exerciseLogRepository;
     private final ExerciseLogMapper exerciseLogMapper;
+    private final ImageService imageService;
 
     @Override
     @Transactional
-    public ExerciseLogDto.Response createExerciseLog(ExerciseLogDto.CreateRequest request, Member member) {
-        ExerciseLog exerciseLog = exerciseLogMapper.toEntity(request);
-        exerciseLog.setMember(member);
+    public ExerciseLogDto.Response createExerciseLog(ExerciseLogDto.CreateRequest request, Member member, MultipartFile multipartFile) {
+        ExerciseLog exerciseLog = exerciseLogMapper.toEntity(request, member);
 
         ExerciseLog savedExerciseLog = exerciseLogRepository.save(exerciseLog);
+
+        Optional.ofNullable(multipartFile).ifPresent(file -> {
+            Image image = imageService.createImage(file, savedExerciseLog);
+            savedExerciseLog.updateImage(image);
+        });
+
         return exerciseLogMapper.toResponse(savedExerciseLog);
     }
 
@@ -48,7 +57,7 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
 
     @Override
     @Transactional
-    public ExerciseLogDto.Response updateExerciseLog(Long id, ExerciseLogDto.UpdateRequest request, Member member) {
+    public ExerciseLogDto.Response updateExerciseLog(Long id, ExerciseLogDto.UpdateRequest request, Member member, MultipartFile multipartFile) {
         ExerciseLog exerciseLog = exerciseLogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("ExerciseLog not found with id " + id));
 
@@ -56,8 +65,15 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
             throw new AccessDeniedException("You do not have permission to update this log");
         }
 
-        exerciseLogMapper.updateFromDto(request, exerciseLog);
+        exerciseLog.updateExerciseLog(request);
+
+        Optional.ofNullable(multipartFile).ifPresent(file -> {
+            Image image = imageService.updateImage(file, exerciseLog);
+            exerciseLog.updateImage(image);
+        });
+
         ExerciseLog updatedExerciseLog = exerciseLogRepository.save(exerciseLog);
+
         return exerciseLogMapper.toResponse(updatedExerciseLog);
     }
 

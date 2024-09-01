@@ -23,21 +23,21 @@ public class Action extends Timestamped implements ImageReferable {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDate date;
+    protected LocalDate date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    protected Member member;
 
     @Column(nullable = false)
-    private Integer score;
+    protected Integer score;
 
     @Column(length = 500)
-    private String content;
+    protected String content;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "image_id")
-    private Image image;
+    protected Image image;
 
     @Override
     public Image.MappingType getImageMappingType() {
@@ -49,6 +49,10 @@ public class Action extends Timestamped implements ImageReferable {
         return this.id;
     }
 
+    public void updateImage(Image image) {
+        this.image = image;
+    }
+
 
     public Action(LocalDate date, Member member, Integer score, String content) {
         this.date = date;
@@ -57,7 +61,4 @@ public class Action extends Timestamped implements ImageReferable {
         this.content = content;
     }
 
-    public void setMember(Member member) {
-        this.member = member;
-    }
 }

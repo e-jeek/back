@@ -1,7 +1,7 @@
 package com.ejeek.back.action.entity;
 
-import com.ejeek.back.image.Image;
 import com.ejeek.back.member.entity.Member;
+import com.ejeek.back.action.dto.WakeupLogDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -27,10 +27,11 @@ public class WakeupLog extends Action {
         this.wakeupTime = wakeupTime;
     }
 
-    public void setMember(Member member) {
-        super.setMember(member);
+    public void updateWakeupLog(WakeupLogDto.UpdateRequest request) {
+        this.date = request.getDate();
+        this.content = request.getContent();
+        this.score = request.getScore();
+        this.wakeupTime = request.getWakeupTime();
     }
 
-    public void updateImage(Image image) {
-    }
 }

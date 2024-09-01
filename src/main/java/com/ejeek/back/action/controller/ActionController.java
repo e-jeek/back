@@ -34,7 +34,7 @@ public class ActionController {
     @PostMapping("/action")
     public ResponseEntity<?> createLog(
             @RequestParam("type") String type,
-            @RequestBody @Valid Map<String, Object> requestBody,
+            @RequestPart @Valid Map<String, Object> requestBody,
             @RequestPart(required = false) MultipartFile file,
             @AuthenticationPrincipal Member member) {
 
@@ -44,12 +44,12 @@ public class ActionController {
         switch (type.toUpperCase()) {
             case "EXERCISE":
                 ExerciseLogDto.CreateRequest exerciseRequest = objectMapper.convertValue(requestBody, ExerciseLogDto.CreateRequest.class);
-                response = exerciseLogService.createExerciseLog(exerciseRequest, member);
+                response = exerciseLogService.createExerciseLog(exerciseRequest, member, file);
                 break;
 
             case "DIET":
                 DietLogDto.CreateRequest dietRequest = objectMapper.convertValue(requestBody, DietLogDto.CreateRequest.class);
-                response = dietLogService.createDietLog(dietRequest, member);
+                response = dietLogService.createDietLog(dietRequest, member, file);
                 break;
 
             case "WAKEUP":
@@ -78,7 +78,8 @@ public class ActionController {
     public ResponseEntity<?> updateLog(
             @PathVariable Long id,
             @RequestParam("type") String type,
-            @RequestBody @Valid Map<String, Object> requestBody,
+            @RequestPart @Valid Map<String, Object> requestBody,
+            @RequestPart(required = false) MultipartFile file,
             @AuthenticationPrincipal Member member) {
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -87,17 +88,17 @@ public class ActionController {
         switch (type.toUpperCase()) {
             case "EXERCISE":
                 ExerciseLogDto.UpdateRequest exerciseRequest = objectMapper.convertValue(requestBody, ExerciseLogDto.UpdateRequest.class);
-                response = exerciseLogService.updateExerciseLog(id, exerciseRequest, member);
+                response = exerciseLogService.updateExerciseLog(id, exerciseRequest, member, file);
                 break;
 
             case "DIET":
                 DietLogDto.UpdateRequest dietRequest = objectMapper.convertValue(requestBody, DietLogDto.UpdateRequest.class);
-                response = dietLogService.updateDietLog(id, dietRequest, member);
+                response = dietLogService.updateDietLog(id, dietRequest, member, file);
                 break;
 
             case "WAKEUP":
                 WakeupLogDto.UpdateRequest wakeupRequest = objectMapper.convertValue(requestBody, WakeupLogDto.UpdateRequest.class);
-                response = wakeupLogService.updateWakeupLog(id, wakeupRequest, member);
+                response = wakeupLogService.updateWakeupLog(id, wakeupRequest, member, file);
                 break;
 
             default:
