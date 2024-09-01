@@ -2,6 +2,7 @@ package com.ejeek.back.action.mapper;
 
 import com.ejeek.back.action.entity.DietLog;
 import com.ejeek.back.action.dto.DietLogDto;
+import com.ejeek.back.member.entity.Member;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -13,8 +14,7 @@ public interface DietLogMapper {
     DietLogDto.Response toResponse(DietLog dietLog);
 
     @Mapping(target = "member", ignore = true)
-    DietLog toEntity(DietLogDto.CreateRequest createRequest);
+    @Mapping(source = "createRequest.content", target = "content")
+    DietLog toEntity(DietLogDto.CreateRequest createRequest, Member member);
 
-    @Mapping(target = "member", ignore = true)
-    void updateFromDto(DietLogDto.UpdateRequest updateRequest, @MappingTarget DietLog dietLog);
 }

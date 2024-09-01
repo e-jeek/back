@@ -2,6 +2,7 @@ package com.ejeek.back.action.mapper;
 
 import com.ejeek.back.action.entity.WakeupLog;
 import com.ejeek.back.action.dto.WakeupLogDto;
+import com.ejeek.back.member.entity.Member;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -13,8 +14,7 @@ public interface WakeupLogMapper {
     WakeupLogDto.Response toResponse(WakeupLog wakeupLog);
 
     @Mapping(target = "member", ignore = true)
-    WakeupLog toEntity(WakeupLogDto.CreateRequest createRequest);
+    @Mapping(source = "createRequest.content", target = "content")
+    WakeupLog toEntity(WakeupLogDto.CreateRequest createRequest, Member member);
 
-    @Mapping(target = "member", ignore = true)
-    void updateFromDto(WakeupLogDto.UpdateRequest updateRequest, @MappingTarget WakeupLog wakeupLog);
 }
