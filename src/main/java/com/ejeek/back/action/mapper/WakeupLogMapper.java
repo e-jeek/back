@@ -11,6 +11,7 @@ import org.mapstruct.MappingTarget;
 public interface WakeupLogMapper {
     @Mapping(target = "memberId", source = "member.id")
     @Mapping(target = "type", constant = "WAKEUP")
+    @Mapping(target = "imageUrl", source = "wakeupLog.image.url")
     WakeupLogDto.Response toResponse(WakeupLog wakeupLog);
 
     @Mapping(target = "member", ignore = true)

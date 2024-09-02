@@ -46,6 +46,7 @@ public class DietLogDto {
         private DietType dietType;
         private String foodName;
         private Integer calories;
+        private String imageUrl;
         private LocalDateTime createdAt;
         private LocalDateTime updateAt;
     }

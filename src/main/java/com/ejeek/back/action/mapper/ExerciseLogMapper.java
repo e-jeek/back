@@ -11,8 +11,8 @@ import org.mapstruct.MappingTarget;
 public interface ExerciseLogMapper {
     @Mapping(target = "memberId", source = "member.id")
     @Mapping(target = "type", constant = "EXERCISE")
+    @Mapping(target = "imageUrl", source = "exerciseLog.image.url")
     ExerciseLogDto.Response toResponse(ExerciseLog exerciseLog);
-
 
     @Mapping(target = "member", ignore = true)
     @Mapping(source = "createRequest.name", target = "name")

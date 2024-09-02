@@ -40,6 +40,7 @@ public class WakeupLogDto {
         private Integer score;
         private String content;
         private LocalTime wakeupTime;
+        private String imageUrl;
         private LocalDateTime createdAt;
         private LocalDateTime updateAt;
     }

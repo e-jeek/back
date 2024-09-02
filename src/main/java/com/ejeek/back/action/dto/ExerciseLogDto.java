@@ -45,6 +45,7 @@ public class ExerciseLogDto {
         private String name;
         private Integer duration;
         private Integer calories;
+        private String imageUrl;
         private LocalDateTime createdAt;
         private LocalDateTime updateAt;
     }

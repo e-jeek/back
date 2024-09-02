@@ -11,6 +11,7 @@ import org.mapstruct.MappingTarget;
 public interface DietLogMapper {
     @Mapping(target = "memberId", source = "member.id")
     @Mapping(target = "type", constant = "DIET")
+    @Mapping(target = "imageUrl", source = "dietLog.image.url")
     DietLogDto.Response toResponse(DietLog dietLog);
 
     @Mapping(target = "member", ignore = true)

@@ -38,9 +38,9 @@ public class ExerciseLog extends Action {
         this.date = request.getDate();
         this.content = request.getContent();
         this.score = request.getScore();
-        this.name = name;
-        this.duration = duration;
-        this.calories = calories;
+        this.name = request.getName();
+        this.duration = request.getDuration();
+        this.calories = request.getCalories();
 
     }
 

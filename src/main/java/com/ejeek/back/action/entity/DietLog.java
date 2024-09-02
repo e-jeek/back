@@ -39,9 +39,9 @@ public class DietLog extends Action {
         this.date = request.getDate();
         this.content = request.getContent();
         this.score = request.getScore();
-        this.dietType = dietType;
-        this.foodName = foodName;
-        this.calories = calories;
+        this.dietType = request.getDietType();
+        this.foodName = request.getFoodName();
+        this.calories = request.getCalories();
     }
 
 }
