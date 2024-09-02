@@ -14,7 +14,6 @@ public interface DietLogMapper {
     @Mapping(target = "imageUrl", source = "dietLog.image.url")
     DietLogDto.Response toResponse(DietLog dietLog);
 
-    @Mapping(target = "member", ignore = true)
     @Mapping(source = "createRequest.content", target = "content")
     DietLog toEntity(DietLogDto.CreateRequest createRequest, Member member);
 

@@ -14,7 +14,6 @@ public interface WakeupLogMapper {
     @Mapping(target = "imageUrl", source = "wakeupLog.image.url")
     WakeupLogDto.Response toResponse(WakeupLog wakeupLog);
 
-    @Mapping(target = "member", ignore = true)
     @Mapping(source = "createRequest.content", target = "content")
     WakeupLog toEntity(WakeupLogDto.CreateRequest createRequest, Member member);
 

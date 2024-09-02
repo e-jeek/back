@@ -14,7 +14,6 @@ public interface ExerciseLogMapper {
     @Mapping(target = "imageUrl", source = "exerciseLog.image.url")
     ExerciseLogDto.Response toResponse(ExerciseLog exerciseLog);
 
-    @Mapping(target = "member", ignore = true)
     @Mapping(source = "createRequest.name", target = "name")
     @Mapping(source = "createRequest.content", target = "content")
     ExerciseLog toEntity(ExerciseLogDto.CreateRequest createRequest, Member member);
