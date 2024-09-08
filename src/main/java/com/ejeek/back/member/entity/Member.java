@@ -69,8 +69,8 @@ public class Member extends Timestamped implements ImageReferable {
     public void updateEncryptedPassword(String password) {
         this.password = password;
     }
-    public void updateStatus() {
-        this.status = MemberStatus.ACTIVE;
+    public void updateStatus(MemberStatus status) {
+        this.status = status;
     }
     public void updateRole() {
         this.role = Role.USER;
