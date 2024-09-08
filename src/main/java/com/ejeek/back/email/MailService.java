@@ -61,7 +61,7 @@ public class MailService {
     private void storeEmailCode(String email, String ePw) {
         long expiryTimeSeconds = 60 * 3L;
         log.info("Redis 인증 번호, 이메일 저장. email = {}, code = {}", email, ePw);
-        redisUtil.setDataExpire(ePw, email, expiryTimeSeconds);
+        redisUtil.setDataExpire(email, ePw, expiryTimeSeconds);
         log.info("Redis 저장 완료. expiryTime: {} minutes", expiryTimeSeconds / 60);
     }
 
