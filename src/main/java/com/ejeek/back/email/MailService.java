@@ -54,8 +54,8 @@ public class MailService {
 
     public boolean confirm(MailDto emailDto) {
         log.info("인증 번호 확인 email = {}, code = {}", emailDto.getEmail(), emailDto.getCode());
-        String email = redisUtil.getData(emailDto.getCode());
-        return email != null && email.equals(emailDto.getEmail());
+        String code = redisUtil.getData(emailDto.getEmail());
+        return code != null && code.equals(emailDto.getCode());
     }
 
     private void storeEmailCode(String email, String ePw) {
