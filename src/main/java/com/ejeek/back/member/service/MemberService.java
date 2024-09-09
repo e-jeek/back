@@ -52,7 +52,7 @@ public class MemberService {
         Optional<Member> member = memberRepository.findByNickname(nickname);
 
         if (member.isPresent()) {
-            throw new CustomException(ExceptionCode.MEMBER_EMAIL_EXIST);
+            throw new CustomException(ExceptionCode.MEMBER_USERNAME_EXIST);
         }
 
         return "사용 가능한 닉네임 입니다.";
