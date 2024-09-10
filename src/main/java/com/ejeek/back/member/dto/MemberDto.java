@@ -5,6 +5,7 @@ import com.ejeek.back.enums.MemberStatus;
 import com.ejeek.back.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,10 +47,10 @@ public class MemberDto {
         private Integer height;
         private Integer weight;
 
-        @NotEmpty
+        @NotNull
         private Boolean policy;
 
-        @NotEmpty
+        @NotNull
         private Boolean marketing;
 
     }
