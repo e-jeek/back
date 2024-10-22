@@ -10,6 +10,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -25,12 +26,16 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 //JWT를 생성하고 검증하는 컴포넌트
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class TokenProvider implements InitializingBean {
+
     private final MemberRepository memberRepository;
+    private static final String BEARER_TYPE = "Bearer";
     private static final String AUTHORITIES_KEY = "auth";
 
     @Value("${jwt.secret}")
@@ -122,4 +127,20 @@ public class TokenProvider implements InitializingBean {
         return false;
     }
 
+    // Request Header 에서 토큰 정보를 꺼내오기 위한 메소드
+    public static String resolveTokenFromReqeust(HttpServletRequest request) {
+        String authHeaderValue = request.getHeader(AUTHORIZATION);
+        if (authHeaderValue != null) {
+            return resolveToken(authHeaderValue);
+        }
+        return null;
+    }
+
+    // Authorization Header의 Value 에서 Bearer 뒤의 토큰 값을 꺼내오기 위한 메소드
+    public static String resolveToken(String authHeaderValue) {
+        if (authHeaderValue.toLowerCase().startsWith(BEARER_TYPE.toLowerCase())) {
+            return authHeaderValue.substring(BEARER_TYPE.length()).trim();
+        }
+        return null;
+    }
 }
