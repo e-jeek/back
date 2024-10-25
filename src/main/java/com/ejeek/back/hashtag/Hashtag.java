@@ -1,7 +1,7 @@
 package com.ejeek.back.hashtag;
 
 import com.ejeek.back.challenge.entity.Challenge;
-import com.ejeek.back.feed.Feed;
+import com.ejeek.back.feed.entity.Feed;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
