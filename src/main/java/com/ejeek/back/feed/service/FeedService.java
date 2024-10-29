@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,10 +41,7 @@ public class FeedService {
             savedFeed.updateImgUrl(img);
         });
 
-
         return feedMapper.toFeedDto(savedFeed);
-
-
     }
 
     @Transactional(readOnly = true)
@@ -56,23 +52,25 @@ public class FeedService {
 
 
     @Transactional(readOnly = true)
-    public List<FeedDto.FeedResponse> getAllFeed(String memberNickname) {
-        List<Feed> feeds = feedRepository.findByMemberNickname(memberNickname);
-        List<FeedDto.FeedResponse> feedList = new ArrayList<>();
-        feeds.forEach(s -> feedList.add(feedMapper.toFeedDto(s)));
-        return feedList;
+    public List<FeedDto.FeedResponse> getAllFeed(String memberNickName) {
+        return feedRepository.findByMemberNickname(memberNickName)
+                .stream()
+                .map(feedMapper::toFeedDto)
+                .toList();
     }
-
-
 
     @Transactional
     public FeedDto.FeedResponse updateFeed(Long feedId, Member member, FeedDto.FeedUpdateRequest request, MultipartFile image) {
-        Feed feed = isAuthorized(feedId, member);
+        Feed feed = verifyFeed(feedId);
         feed.updateFeedDto(request);
+
+        if(!feed.canModifiedBy(member)) {
+            throw new CustomException(ExceptionCode.MEMBER_NOT_SAME);
+
+        }
 
         List<Hashtag> hashtags = hashtagService.createHashtags(request.getHashtags(), feed);
         feed.updateHashtags(hashtags);
-
 
         Optional.ofNullable(image).ifPresent(file -> {
             Image img = imageService.createImage(file, feed);
@@ -85,26 +83,17 @@ public class FeedService {
 
     @Transactional
     public void deleteFeed(Long feedId, Member member) {
-        Feed feed = isAuthorized(feedId, member);
+        Feed feed = verifyFeed(feedId);
+        if(!feed.canModifiedBy(member)){
+            throw new CustomException(ExceptionCode.MEMBER_NOT_SAME);
 
+        }
         feedRepository.delete(feed);
     }
 
-
-    // 유효한 피드인지 검증
     private Feed verifyFeed(Long feedId) {
         return feedRepository.findById(feedId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_SAME)); // 변경해야함
     }
 
-    // 권한이 있는 사용자인지 검증
-    private Feed isAuthorized(Long feedId, Member member) {
-        Feed feed = verifyFeed(feedId);
-        if (!feed.getMember().getId().equals(member.getId())) {
-            throw new CustomException(ExceptionCode.MEMBER_NOT_SAME);
-        } else {
-            return feed;
-        }
-
-    }
 }

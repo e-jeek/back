@@ -36,7 +36,7 @@ public class Feed extends Timestamped implements ImageReferable, HashtagReferabl
     @Column(nullable = false, length = 500)
     private String content;
 
-    @OneToMany(mappedBy = "feed")
+    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Hashtag> hashtags = new ArrayList<>();
 
     @OneToOne
