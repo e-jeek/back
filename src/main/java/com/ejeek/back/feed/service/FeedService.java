@@ -1,0 +1,100 @@
+package com.ejeek.back.feed.service;
+
+import com.ejeek.back.feed.dto.FeedDto;
+import com.ejeek.back.feed.entity.Feed;
+import com.ejeek.back.feed.mapper.FeedMapper;
+import com.ejeek.back.feed.repository.FeedRepository;
+import com.ejeek.back.global.exception.CustomException;
+import com.ejeek.back.global.exception.ExceptionCode;
+import com.ejeek.back.hashtag.Hashtag;
+import com.ejeek.back.hashtag.HashtagService;
+import com.ejeek.back.image.Image;
+import com.ejeek.back.image.ImageService;
+import com.ejeek.back.member.entity.Member;
+import jakarta.annotation.Nullable;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Optional;
+
+@RequiredArgsConstructor
+@Service
+public class FeedService {
+
+    private final FeedRepository feedRepository;
+    private final FeedMapper feedMapper;
+    private final ImageService imageService;
+    private final HashtagService hashtagService;
+
+    @Transactional
+    public FeedDto.FeedResponse createFeed(Member member, FeedDto.FeedRequest request, @Nullable MultipartFile image) {
+        Feed feed = feedMapper.toFeedEntity(request, member);
+        Feed savedFeed = feedRepository.save(feed);
+
+        List<Hashtag> hashtags = hashtagService.createHashtags(request.getHashtags(), savedFeed);
+        savedFeed.updateHashtags(hashtags);
+
+        Optional.ofNullable(image).ifPresent(file -> {
+            Image img = imageService.createImage(file, savedFeed);
+            savedFeed.updateImgUrl(img);
+        });
+
+        return feedMapper.toFeedDto(savedFeed);
+    }
+
+    @Transactional(readOnly = true)
+    public FeedDto.FeedResponse getFeed(Long feedId) {
+        Feed feed = verifyFeed(feedId);
+        return feedMapper.toFeedDto(feed);
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<FeedDto.FeedResponse> getAllFeed(String memberNickName) {
+        return feedRepository.findByMemberNickname(memberNickName)
+                .stream()
+                .map(feedMapper::toFeedDto)
+                .toList();
+    }
+
+    @Transactional
+    public FeedDto.FeedResponse updateFeed(Long feedId, Member member, FeedDto.FeedUpdateRequest request, MultipartFile image) {
+        Feed feed = verifyFeed(feedId);
+        feed.updateFeedDto(request);
+
+        if(!feed.canModifiedBy(member)) {
+            throw new CustomException(ExceptionCode.MEMBER_NOT_SAME);
+
+        }
+
+        List<Hashtag> hashtags = hashtagService.createHashtags(request.getHashtags(), feed);
+        feed.updateHashtags(hashtags);
+
+        Optional.ofNullable(image).ifPresent(file -> {
+            Image img = imageService.createImage(file, feed);
+            feed.updateImgUrl(img);
+        });
+
+        return feedMapper.toFeedUpdateDto(feed);
+
+    }
+
+    @Transactional
+    public void deleteFeed(Long feedId, Member member) {
+        Feed feed = verifyFeed(feedId);
+        if(!feed.canModifiedBy(member)){
+            throw new CustomException(ExceptionCode.MEMBER_NOT_SAME);
+
+        }
+        feedRepository.delete(feed);
+    }
+
+    private Feed verifyFeed(Long feedId) {
+        return feedRepository.findById(feedId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_SAME)); // 변경해야함
+    }
+
+}
