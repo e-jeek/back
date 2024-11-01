@@ -11,6 +11,7 @@ import com.ejeek.back.hashtag.HashtagService;
 import com.ejeek.back.image.Image;
 import com.ejeek.back.image.ImageService;
 import com.ejeek.back.member.entity.Member;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,7 @@ public class FeedService {
     private final HashtagService hashtagService;
 
     @Transactional
-    public FeedDto.FeedResponse createFeed(Member member, FeedDto.FeedRequest request, MultipartFile image) {
+    public FeedDto.FeedResponse createFeed(Member member, FeedDto.FeedRequest request, @Nullable MultipartFile image) {
         Feed feed = feedMapper.toFeedEntity(request, member);
         Feed savedFeed = feedRepository.save(feed);
 

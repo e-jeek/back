@@ -1,5 +1,6 @@
 package com.ejeek.back.feed.entity;
 
+import com.ejeek.back.comment.entity.Comment;
 import com.ejeek.back.feed.dto.FeedDto;
 import com.ejeek.back.global.audit.Timestamped;
 import com.ejeek.back.global.referable.HashtagReferable;
@@ -43,6 +44,8 @@ public class Feed extends Timestamped implements ImageReferable, HashtagReferabl
     @JoinColumn(name = "image_id")
     private Image image;
 
+    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> Comments = new ArrayList<>();
 
     @Override
     public Image.MappingType getImageMappingType() {
