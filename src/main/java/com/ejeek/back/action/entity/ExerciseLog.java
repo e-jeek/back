@@ -1,7 +1,6 @@
 package com.ejeek.back.action.entity;
 
 import com.ejeek.back.action.dto.ExerciseLogDto;
-import com.ejeek.back.action.dto.WakeupLogDto;
 import com.ejeek.back.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

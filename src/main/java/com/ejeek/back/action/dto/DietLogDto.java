@@ -2,18 +2,17 @@ package com.ejeek.back.action.dto;
 
 import com.ejeek.back.enums.DietType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Getter
-@NoArgsConstructor
 public class DietLogDto {
 
     @Getter
-    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class CreateRequest {
         private LocalDate date;
         private Integer score;
@@ -24,7 +23,8 @@ public class DietLogDto {
     }
 
     @Getter
-    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class UpdateRequest {
         private LocalDate date;
         private Integer score;

@@ -16,12 +16,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ExerciseLogServiceImpl implements ExerciseLogService {
+public class ExerciseLogServiceImpl implements LogService {
 
     private final ExerciseLogRepository exerciseLogRepository;
     private final ExerciseLogMapper exerciseLogMapper;
@@ -29,9 +30,10 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
 
     @Override
     @Transactional
-    public ExerciseLogDto.Response createExerciseLog(ExerciseLogDto.CreateRequest request, Member member, MultipartFile multipartFile) {
-        ExerciseLog exerciseLog = exerciseLogMapper.toEntity(request, member);
+    public Object createLog(Map<String, String> requestBody, Member member, MultipartFile multipartFile) {
+        ExerciseLogDto.CreateRequest request = exerciseLogMapper.fromRequestMap(requestBody);
 
+        ExerciseLog exerciseLog = exerciseLogMapper.toEntity(request, member);
         ExerciseLog savedExerciseLog = exerciseLogRepository.save(exerciseLog);
 
         Optional.ofNullable(multipartFile).ifPresent(file -> {
@@ -44,7 +46,7 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
 
     @Override
     @Transactional(readOnly = true)
-    public ExerciseLogDto.Response getExerciseLogById(Long id, Member member) {
+    public Object getLogById(Long id, Member member) {
         ExerciseLog exercise = exerciseLogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Exercise not found with id " + id));
 
@@ -57,7 +59,7 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
 
     @Override
     @Transactional
-    public ExerciseLogDto.Response updateExerciseLog(Long id, ExerciseLogDto.UpdateRequest request, Member member, MultipartFile multipartFile) {
+    public Object updateLog(Long id, Map<String, String> requestBody, Member member, MultipartFile multipartFile) {
         ExerciseLog exerciseLog = exerciseLogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("ExerciseLog not found with id " + id));
 
@@ -65,6 +67,7 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
             throw new AccessDeniedException("You do not have permission to update this log");
         }
 
+        ExerciseLogDto.UpdateRequest request = exerciseLogMapper.fromUpdateRequestMap(requestBody);
         exerciseLog.updateExerciseLog(request);
 
         Optional.ofNullable(multipartFile).ifPresent(file -> {
@@ -79,7 +82,7 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
 
     @Override
     @Transactional
-    public void deleteExerciseLog(Long id, Member member) {
+    public void deleteLog(Long id, Member member) {
         ExerciseLog exerciseLog = exerciseLogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("ExerciseLog not found with id " + id));
 
@@ -92,10 +95,20 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ExerciseLogDto.Response> getAllExerciseLog(Member member, LocalDate date) {
+    public List<ExerciseLogDto.Response> getAllLogs(Member member, LocalDate date) {
         List<ExerciseLog> exerciseLogs = exerciseLogRepository.findByMemberAndDate(member, date);
+
         return exerciseLogs.stream()
                 .map(exerciseLogMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public double getDailyAverageScore(Member member, LocalDate date) {
+        List<ExerciseLogDto.Response> logs = getAllLogs(member, date);
+        return logs.stream()
+                .mapToDouble(ExerciseLogDto.Response::getScore)  // DietLogDto에 'score' 필드가 있다고 가정
+                .average()
+                .orElse(0);
     }
 }

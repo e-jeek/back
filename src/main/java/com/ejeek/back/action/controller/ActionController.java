@@ -3,13 +3,11 @@ package com.ejeek.back.action.controller;
 import com.ejeek.back.action.dto.DietLogDto;
 import com.ejeek.back.action.dto.ExerciseLogDto;
 import com.ejeek.back.action.dto.WakeupLogDto;
-import com.ejeek.back.action.service.DietLogService;
-import com.ejeek.back.action.service.ExerciseLogService;
-import com.ejeek.back.action.service.WakeupLogService;
+
+import com.ejeek.back.action.service.LogService;
+import com.ejeek.back.enums.LogType;
 import com.ejeek.back.global.utils.UriCreator;
 import com.ejeek.back.member.entity.Member;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,40 +27,22 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ActionController {
 
-    private final ExerciseLogService exerciseLogService;
-    private final DietLogService dietLogService;
-    private final WakeupLogService wakeupLogService;
+    private final Map<String, LogService> logServiceMap;
 
     @PostMapping
     public ResponseEntity<?> createLog(
-            @RequestParam("type") String type,
-            @RequestPart @Valid Map<String, Object> requestBody,
+            @RequestParam("type") LogType type,
+            @RequestPart @Valid Map<String, String> requestBody,
             @RequestPart(required = false) MultipartFile file,
             @AuthenticationPrincipal Member member) {
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        Object response;
-
-        switch (type.toUpperCase()) {
-            case "EXERCISE":
-                ExerciseLogDto.CreateRequest exerciseRequest = objectMapper.convertValue(requestBody, ExerciseLogDto.CreateRequest.class);
-                response = exerciseLogService.createExerciseLog(exerciseRequest, member, file);
-                break;
-
-            case "DIET":
-                DietLogDto.CreateRequest dietRequest = objectMapper.convertValue(requestBody, DietLogDto.CreateRequest.class);
-                response = dietLogService.createDietLog(dietRequest, member, file);
-                break;
-
-            case "WAKEUP":
-                WakeupLogDto.CreateRequest wakeupRequest = objectMapper.convertValue(requestBody, WakeupLogDto.CreateRequest.class);
-                response = wakeupLogService.createWakeupLog(wakeupRequest, member, file);
-                break;
-
-            default:
-                return ResponseEntity.badRequest().body("Invalid type");
+        LogService logService = logServiceMap.get(type.getServiceName());
+        if (logService == null) {
+            return ResponseEntity.badRequest().body("Invalid log type: " + type);
         }
+        
+        Object response = logService.createLog(requestBody, member, file);
+
         Long id;
         if (response instanceof ExerciseLogDto.Response) {
             id = ((ExerciseLogDto.Response) response).getId();
@@ -80,34 +60,13 @@ public class ActionController {
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateLog(
             @PathVariable Long id,
-            @RequestParam("type") String type,
-            @RequestPart @Valid Map<String, Object> requestBody,
+            @RequestParam("type") LogType type,
+            @RequestPart @Valid Map<String, String> requestBody,
             @RequestPart(required = false) MultipartFile file,
             @AuthenticationPrincipal Member member) {
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        Object response;
-
-        switch (type.toUpperCase()) {
-            case "EXERCISE":
-                ExerciseLogDto.UpdateRequest exerciseRequest = objectMapper.convertValue(requestBody, ExerciseLogDto.UpdateRequest.class);
-                response = exerciseLogService.updateExerciseLog(id, exerciseRequest, member, file);
-                break;
-
-            case "DIET":
-                DietLogDto.UpdateRequest dietRequest = objectMapper.convertValue(requestBody, DietLogDto.UpdateRequest.class);
-                response = dietLogService.updateDietLog(id, dietRequest, member, file);
-                break;
-
-            case "WAKEUP":
-                WakeupLogDto.UpdateRequest wakeupRequest = objectMapper.convertValue(requestBody, WakeupLogDto.UpdateRequest.class);
-                response = wakeupLogService.updateWakeupLog(id, wakeupRequest, member, file);
-                break;
-
-            default:
-                return ResponseEntity.badRequest().body("Invalid type");
-        }
+        LogService logService = logServiceMap.get(type.getServiceName());
+        Object response = logService.updateLog(id, requestBody, member, file);
 
         return ResponseEntity.ok(response);
     }
@@ -115,76 +74,42 @@ public class ActionController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteLog(
             @PathVariable Long id,
-            @RequestParam("type") String type,
+            @RequestParam("type") LogType type,
             @AuthenticationPrincipal Member member) throws EntityNotFoundException {
 
-        switch (type.toUpperCase()) {
-            case "EXERCISE":
-                exerciseLogService.deleteExerciseLog(id, member);
-                break;
-
-            case "DIET":
-                dietLogService.deleteDietLog(id, member);
-                break;
-
-            case "WAKEUP":
-                wakeupLogService.deleteWakeupLog(id, member);
-                break;
-
-            default:
-                return ResponseEntity.badRequest().body("Invalid type");
-        }
+        LogService logService = logServiceMap.get(type.getServiceName());
+        logService.deleteLog(id, member);
 
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/exercise")
-    public ResponseEntity<List<ExerciseLogDto.Response>> getDailyExerciseLogs(
+    @GetMapping("/daily")
+    public ResponseEntity<?> getDailyLogs(
             @AuthenticationPrincipal Member member,
-            @RequestParam(value = "date") LocalDate date) {
-        List<ExerciseLogDto.Response> logs = exerciseLogService.getAllExerciseLog(member, date);
-        return ResponseEntity.ok(logs);
-    }
+            @RequestParam("type") LogType type,
+            @RequestParam("date") LocalDate date) {
 
-    @GetMapping("/diet")
-    public ResponseEntity<List<DietLogDto.Response>> getDailyDietLogs(
-            @AuthenticationPrincipal Member member,
-            @RequestParam(value = "date") LocalDate date) {
-        List<DietLogDto.Response> logs = dietLogService.getAllDietLog(member, date);
-        return ResponseEntity.ok(logs);
-    }
+        LogService logService = logServiceMap.get(type.getServiceName());
+        System.out.println("l");
+        List<?> logs = logService.getAllLogs(member, date);
 
-    @GetMapping("/wakeup")
-    public ResponseEntity<List<WakeupLogDto.Response>> getDailyWakeupLogs(
-            @AuthenticationPrincipal Member member,
-            @RequestParam(value = "date") LocalDate date) {
-        List<WakeupLogDto.Response> logs = wakeupLogService.getAllWakeupLog(member, date);
+        System.out.println("k");
         return ResponseEntity.ok(logs);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getLogById(
             @PathVariable Long id,
-            @RequestParam("type") String type,
+            @RequestParam("type") LogType type,
             @AuthenticationPrincipal Member member) {
 
-        switch (type.toUpperCase()) {
-            case "EXERCISE":
-                ExerciseLogDto.Response exerciseResponse = exerciseLogService.getExerciseLogById(id, member);
-                return ResponseEntity.ok(exerciseResponse);
+        LogService logService = logServiceMap.get(type.getServiceName());
+        Object response = logService.getLogById(id, member);
 
-            case "DIET":
-                DietLogDto.Response dietResponse = dietLogService.getDietLogById(id, member);
-                return ResponseEntity.ok(dietResponse);
+        return ResponseEntity.ok(response);
 
-            case "WAKEUP":
-                WakeupLogDto.Response wakeupResponse = wakeupLogService.getWakeupLogById(id, member);
-                return ResponseEntity.ok(wakeupResponse);
-
-            default:
-                return ResponseEntity.badRequest().body("Invalid type");
-        }
     }
+
     @GetMapping
     public ResponseEntity<Map<String, Map<String, Object>>> getMonthlyLogs(
             @RequestParam int year,
@@ -199,22 +124,21 @@ public class ActionController {
         for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
             Map<String, Object> dailyLogs = new HashMap<>();
 
-            List<WakeupLogDto.Response> wakeupLogs = wakeupLogService.getAllWakeupLog(member, date);
-            List<DietLogDto.Response> dietLogs = dietLogService.getAllDietLog(member, date);
-            List<ExerciseLogDto.Response> exerciseLogs = exerciseLogService.getAllExerciseLog(member, date);
+            for (LogType type : LogType.values()) {
+                LogService logService = logServiceMap.get(type.getServiceName());
+                if (logService != null) {
+                    List<?> logs = logService.getAllLogs(member, date);
+                    double averageScore = logService.getDailyAverageScore(member, date);
 
-            double wakeupAverage = wakeupLogs.stream().mapToDouble(WakeupLogDto.Response::getScore).average().orElse(0);
-            double dietAverage = dietLogs.stream().mapToDouble(DietLogDto.Response::getScore).average().orElse(0);
-            double exerciseAverage = exerciseLogs.stream().mapToDouble(ExerciseLogDto.Response::getScore).average().orElse(0);
-
-            dailyLogs.put("WAKEUP", Map.of("average", wakeupAverage, "data", wakeupLogs));
-            dailyLogs.put("DIET", Map.of("average", dietAverage, "data", dietLogs));
-            dailyLogs.put("EXERCISE", Map.of("average", exerciseAverage, "data", exerciseLogs));
+                    dailyLogs.put(type.name(), Map.of("average", averageScore, "data", logs));
+                }
+            }
 
             monthlyLogs.put(date.toString(), dailyLogs);
         }
 
         return ResponseEntity.ok(monthlyLogs);
     }
+
 
 }

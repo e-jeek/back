@@ -16,12 +16,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class WakeupLogServiceImpl implements WakeupLogService {
+public class WakeupLogServiceImpl implements LogService {
 
     private final WakeupLogRepository wakeupLogRepository;
     private final WakeupLogMapper wakeupLogMapper;
@@ -29,21 +30,23 @@ public class WakeupLogServiceImpl implements WakeupLogService {
 
     @Override
     @Transactional
-    public WakeupLogDto.Response createWakeupLog(WakeupLogDto.CreateRequest request, Member member, MultipartFile multipartFile) {
-        WakeupLog wakeupLog = wakeupLogMapper.toEntity(request, member);
+    public Object createLog(Map<String, String> requestBody, Member member, MultipartFile multipartFile) {
+        WakeupLogDto.CreateRequest request = wakeupLogMapper.fromRequestMap(requestBody);
 
+        WakeupLog wakeupLog = wakeupLogMapper.toEntity(request, member);
         WakeupLog savedWakeupLog = wakeupLogRepository.save(wakeupLog);
 
         Optional.ofNullable(multipartFile).ifPresent(file -> {
             Image image = imageService.createImage(file, savedWakeupLog);
             savedWakeupLog.updateImage(image);
         });
+
         return wakeupLogMapper.toResponse(savedWakeupLog);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public WakeupLogDto.Response getWakeupLogById(Long id, Member member) {
+    public Object getLogById(Long id, Member member) {
         WakeupLog wakeupLog = wakeupLogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("WakeupLog not found with id " + id));
 
@@ -56,7 +59,7 @@ public class WakeupLogServiceImpl implements WakeupLogService {
 
     @Override
     @Transactional
-    public WakeupLogDto.Response updateWakeupLog(Long id, WakeupLogDto.UpdateRequest request, Member member, MultipartFile multipartFile) {
+    public Object updateLog(Long id, Map<String, String> requestBody, Member member, MultipartFile multipartFile) {
         WakeupLog wakeupLog = wakeupLogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("WakeupLog not found with id " + id));
 
@@ -64,6 +67,7 @@ public class WakeupLogServiceImpl implements WakeupLogService {
             throw new AccessDeniedException("You do not have permission to update this log");
         }
 
+        WakeupLogDto.UpdateRequest request = wakeupLogMapper.fromUpdateRequestMap(requestBody);
         wakeupLog.updateWakeupLog(request);
 
         Optional.ofNullable(multipartFile).ifPresent(file -> {
@@ -78,7 +82,7 @@ public class WakeupLogServiceImpl implements WakeupLogService {
 
     @Override
     @Transactional
-    public void deleteWakeupLog(Long id, Member member) {
+    public void deleteLog(Long id, Member member) {
         WakeupLog wakeupLog = wakeupLogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("WakeupLog not found with id " + id));
 
@@ -91,10 +95,19 @@ public class WakeupLogServiceImpl implements WakeupLogService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<WakeupLogDto.Response> getAllWakeupLog(Member member, LocalDate date) {
+    public List<WakeupLogDto.Response> getAllLogs(Member member, LocalDate date) {
         List<WakeupLog> wakeupLogs = wakeupLogRepository.findByMemberAndDate(member, date);
         return wakeupLogs.stream()
                 .map(wakeupLogMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public double getDailyAverageScore(Member member, LocalDate date) {
+        List<WakeupLogDto.Response> logs = getAllLogs(member, date);
+        return logs.stream()
+                .mapToDouble(WakeupLogDto.Response::getScore)
+                .average()
+                .orElse(0);
     }
 }

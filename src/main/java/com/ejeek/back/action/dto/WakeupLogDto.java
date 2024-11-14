@@ -1,19 +1,19 @@
 package com.ejeek.back.action.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-@Getter
-@NoArgsConstructor
 public class WakeupLogDto {
 
     @Getter
-    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class CreateRequest {
         private LocalDate date;
         private Integer score;
@@ -22,7 +22,8 @@ public class WakeupLogDto {
     }
 
     @Getter
-    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class UpdateRequest {
         private LocalDate date;
         private Integer score;

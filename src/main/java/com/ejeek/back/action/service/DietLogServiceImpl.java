@@ -16,12 +16,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class DietLogServiceImpl implements DietLogService{
+public class DietLogServiceImpl implements LogService{
 
     private final DietLogRepository dietLogRepository;
     private final DietLogMapper dietLogMapper;
@@ -29,9 +30,10 @@ public class DietLogServiceImpl implements DietLogService{
 
     @Override
     @Transactional
-    public DietLogDto.Response createDietLog(DietLogDto.CreateRequest request, Member member, MultipartFile multipartFile) {
-        DietLog dietLog = dietLogMapper.toEntity(request, member);
+    public Object createLog(Map<String, String> requestBody, Member member, MultipartFile multipartFile) {
+        DietLogDto.CreateRequest request = dietLogMapper.fromRequestMap(requestBody);
 
+        DietLog dietLog = dietLogMapper.toEntity(request, member);
         DietLog savedDietLog = dietLogRepository.save(dietLog);
 
         Optional.ofNullable(multipartFile).ifPresent(file -> {
@@ -43,7 +45,7 @@ public class DietLogServiceImpl implements DietLogService{
 
     @Override
     @Transactional(readOnly = true)
-    public DietLogDto.Response getDietLogById(Long id, Member member) {
+    public Object getLogById(Long id, Member member) {
         DietLog dietLog = dietLogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("DietLog not found with id " + id));
 
@@ -56,7 +58,7 @@ public class DietLogServiceImpl implements DietLogService{
 
     @Override
     @Transactional
-    public DietLogDto.Response updateDietLog(Long id, DietLogDto.UpdateRequest request, Member member, MultipartFile multipartFile) {
+    public Object updateLog(Long id, Map<String, String> requestBody, Member member, MultipartFile multipartFile) {
         DietLog dietLog = dietLogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("DietLog not found with id " + id));
 
@@ -64,6 +66,7 @@ public class DietLogServiceImpl implements DietLogService{
             throw new AccessDeniedException("You do not have permission to update this log");
         }
 
+        DietLogDto.UpdateRequest request = dietLogMapper.fromUpdateRequestMap(requestBody);
         dietLog.updateDietLog(request);
 
         Optional.ofNullable(multipartFile).ifPresent(file -> {
@@ -78,7 +81,7 @@ public class DietLogServiceImpl implements DietLogService{
 
     @Override
     @Transactional
-    public void deleteDietLog(Long id, Member member) {
+    public void deleteLog(Long id, Member member) {
         DietLog dietLog = dietLogRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("DietLog not found with id " + id));
 
@@ -91,10 +94,19 @@ public class DietLogServiceImpl implements DietLogService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<DietLogDto.Response> getAllDietLog(Member member, LocalDate date) {
+    public List<DietLogDto.Response> getAllLogs(Member member, LocalDate date) {
         List<DietLog> dietLogs = dietLogRepository.findByMemberAndDate(member, date);
         return dietLogs.stream()
                 .map(dietLogMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public double getDailyAverageScore(Member member, LocalDate date) {
+        List<DietLogDto.Response> logs = getAllLogs(member, date);
+        return logs.stream()
+                .mapToDouble(DietLogDto.Response::getScore)  // DietLogDto에 'score' 필드가 있다고 가정
+                .average()
+                .orElse(0);
     }
 }

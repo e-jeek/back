@@ -1,8 +1,8 @@
 package com.ejeek.back.image;
 
 import com.ejeek.back.action.entity.Action;
-import com.ejeek.back.challenge.Challenge;
-import com.ejeek.back.challenge.challenge_confirm.ChallengeConfirm;
+import com.ejeek.back.challenge.entity.Challenge;
+import com.ejeek.back.challenge.entity.ChallengeConfirm;
 import com.ejeek.back.feed.Feed;
 import com.ejeek.back.member.entity.Member;
 import jakarta.persistence.Embeddable;
